@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Objects;
 
-public class NewPassword {
+public class NewPasswordDto {
 
     @Schema(type = "string",
             description = "текущий пароль",
@@ -30,7 +30,7 @@ public class NewPassword {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        NewPassword that = (NewPassword) o;
+        NewPasswordDto that = (NewPasswordDto) o;
         return Objects.equals(currentPassword, that.currentPassword) && Objects.equals(newPassword, that.newPassword);
     }
 
@@ -55,10 +55,10 @@ public class NewPassword {
         this.newPassword = newPassword;
     }
 
-    public NewPassword() {
+    public NewPasswordDto() {
     }
 
-    public NewPassword(String currentPassword, String newPassword) {
+    public NewPasswordDto(String currentPassword, String newPassword) {
         this.currentPassword = currentPassword;
         this.newPassword = newPassword;
     }

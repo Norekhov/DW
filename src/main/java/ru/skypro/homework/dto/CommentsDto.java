@@ -5,19 +5,19 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import java.util.Objects;
 
-public class Ads {
+public class CommentsDto {
 
     @Schema(type = "integer",
             format = "int32",
-            description = "общее количество объявлений")
+            description = "общее количество комментариев")
     private Integer count;
 
-    @Schema(description = "Список объявлений")
-    private List<Ad> results;
+    @Schema(description = "Список комментариев")
+    private List<CommentDto> results;
 
     @Override
     public String toString() {
-        return "Ads{" +
+        return "Comments{" +
                 "count=" + count +
                 ", results=" + results +
                 '}';
@@ -27,8 +27,8 @@ public class Ads {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Ads ads = (Ads) o;
-        return Objects.equals(count, ads.count) && Objects.equals(results, ads.results);
+        CommentsDto commentsDto = (CommentsDto) o;
+        return Objects.equals(count, commentsDto.count) && Objects.equals(results, commentsDto.results);
     }
 
     @Override
@@ -44,22 +44,20 @@ public class Ads {
         this.count = count;
     }
 
-    public List<Ad> getResults() {
+    public List<CommentDto> getResults() {
         return results;
     }
 
-    public void setResults(List<Ad> results) {
+    public void setResults(List<CommentDto> results) {
         this.results = results;
     }
 
-    public Ads() {
+    public CommentsDto() {
     }
 
-    public Ads(Integer count, List<Ad> results) {
+    public CommentsDto(Integer count, List<CommentDto> results) {
         this.count = count;
         this.results = results;
     }
+
 }
-
-
-

@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.Objects;
 
 @Data
-public class Register {
+public class RegisterDto {
 
     @Schema(type = "string",
             description = "логин",
@@ -40,7 +40,7 @@ public class Register {
     @Schema(type = "string",
             description = "роль пользователя",
             allowableValues = {"USER", "ADMIN"})
-    private Role role;
+    private RoleDto roleDto;
 
     @Override
     public String toString() {
@@ -50,7 +50,7 @@ public class Register {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", phone='" + phone + '\'' +
-                ", role=" + role +
+                ", role=" + roleDto +
                 '}';
     }
 
@@ -58,13 +58,13 @@ public class Register {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Register register = (Register) o;
-        return Objects.equals(username, register.username) && Objects.equals(password, register.password) && Objects.equals(firstName, register.firstName) && Objects.equals(lastName, register.lastName) && Objects.equals(phone, register.phone) && role == register.role;
+        RegisterDto registerDto = (RegisterDto) o;
+        return Objects.equals(username, registerDto.username) && Objects.equals(password, registerDto.password) && Objects.equals(firstName, registerDto.firstName) && Objects.equals(lastName, registerDto.lastName) && Objects.equals(phone, registerDto.phone) && roleDto == registerDto.roleDto;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(username, password, firstName, lastName, phone, role);
+        return Objects.hash(username, password, firstName, lastName, phone, roleDto);
     }
 
     public String getUsername() {
@@ -107,23 +107,23 @@ public class Register {
         this.phone = phone;
     }
 
-    public Role getRole() {
-        return role;
+    public RoleDto getRole() {
+        return roleDto;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setRole(RoleDto roleDto) {
+        this.roleDto = roleDto;
     }
 
-    public Register() {
+    public RegisterDto() {
     }
 
-    public Register(String username, String password, String firstName, String lastName, String phone, Role role) {
+    public RegisterDto(String username, String password, String firstName, String lastName, String phone, RoleDto roleDto) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
-        this.role = role;
+        this.roleDto = roleDto;
     }
 }

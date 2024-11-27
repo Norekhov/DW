@@ -19,20 +19,20 @@ public class UsersController {
 
     @PostMapping("/set_password")
     @Operation(summary = "Обновление пароля")
-    public String setPassword(@RequestBody NewPassword newPassword) {
-        return usersService.setPassword(newPassword);
+    public String setPassword(@RequestBody NewPasswordDto newPasswordDto) {
+        return usersService.setPassword(newPasswordDto);
     }
 
     @GetMapping("/me")
     @Operation(summary = "Получение информации об авторизованном пользователе")
-    public User getUser() {
+    public UserDto getUser() {
         return usersService.getUser();
     }
 
     @PatchMapping("/me")
     @Operation(summary = "Обновление информации об авторизованном пользователе")
-    public String updateUser(@RequestBody UpdateUser updateUser) {
-        return usersService.updateUser(updateUser);
+    public String updateUser(@RequestBody UpdateUserDto updateUserDto) {
+        return usersService.updateUser(updateUserDto);
     }
 
     @PatchMapping("/me/image")
