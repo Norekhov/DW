@@ -7,7 +7,7 @@ import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.dto.UserDto;
 
 @Service
-public class UsersService {
+public class UserService {
 
     public String setPassword(NewPasswordDto newPasswordDto) {
         return null;

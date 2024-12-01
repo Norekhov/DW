@@ -3,8 +3,8 @@ package ru.skypro.homework.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name="adPictures")
-public class AdPictures {
+@Table(name="ad_picture")
+public class AdPicture {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,13 +19,16 @@ public class AdPictures {
     @Column(name = "mediatype")
     private String mediaType;
 
-    private byte[] data;
+    //    private byte[] data;
 
+    //только одна картинка на объявление... мда, сервис обречен :)
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ad_id")
     private Ad ad;
 
-    public AdPictures(Integer id) {
+    public AdPicture() {}
+
+    public AdPicture(Integer id) {
         this.id = id;
     }
 
@@ -61,13 +64,13 @@ public class AdPictures {
         this.mediaType = mediaType;
     }
 
-    public byte[] getData() {
-        return data;
-    }
+//    public byte[] getData() {
+//        return data;
+//    }
 
-    public void setData(byte[] data) {
-        this.data = data;
-    }
+//    public void setData(byte[] data) {
+//        this.data = data;
+//    }
 
     public Ad getAd() {
         return ad;
