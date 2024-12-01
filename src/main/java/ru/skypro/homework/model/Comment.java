@@ -17,8 +17,8 @@ public class Comment {
     private Integer createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "users_id")
-    private Users users;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ad_id")
@@ -44,12 +44,12 @@ public class Comment {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Comment comment = (Comment) o;
-        return Objects.equals(pk, comment.pk) && Objects.equals(text, comment.text) && Objects.equals(createdAt, comment.createdAt) && Objects.equals(users, comment.users) && Objects.equals(ad, comment.ad);
+        return Objects.equals(pk, comment.pk) && Objects.equals(text, comment.text) && Objects.equals(createdAt, comment.createdAt) && Objects.equals(user, comment.user) && Objects.equals(ad, comment.ad);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pk, text, createdAt, users, ad);
+        return Objects.hash(pk, text, createdAt, user, ad);
     }
 
     public Integer getPk() {
@@ -76,12 +76,12 @@ public class Comment {
         this.createdAt = createdAt;
     }
 
-    public Users getUser() {
-        return users;
+    public User getUser() {
+        return user;
     }
 
-    public void setUser(Users users) {
-        this.users = users;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Ad getAd() {

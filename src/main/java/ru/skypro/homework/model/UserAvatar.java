@@ -3,7 +3,7 @@ package ru.skypro.homework.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name="userAvatar")
+@Table(name="user_avatar")
 public class UserAvatar {
 
     @Id
@@ -22,6 +22,6 @@ public class UserAvatar {
     private byte[] data;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "users_id")
-    private Users users;
+    @JoinColumn(name = "user_id")
+    private User user;
 }

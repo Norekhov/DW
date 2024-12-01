@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name="users")
-public class Users {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
@@ -27,7 +27,7 @@ public class Users {
 
     @Override
     public String toString() {
-        return "Users{" +
+        return "User{" +
                 "id=" + id +
                 ", email='" + email + '\'' +
                 ", firstName='" + firstName + '\'' +
@@ -42,8 +42,8 @@ public class Users {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Users users = (Users) o;
-        return Objects.equals(id, users.id) && Objects.equals(email, users.email) && Objects.equals(firstName, users.firstName) && Objects.equals(lastName, users.lastName) && Objects.equals(phone, users.phone) && roleDto == users.roleDto && Objects.equals(password, users.password);
+        User user = (User) o;
+        return Objects.equals(id, user.id) && Objects.equals(email, user.email) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(phone, user.phone) && roleDto == user.roleDto && Objects.equals(password, user.password);
     }
 
     @Override
@@ -107,10 +107,10 @@ public class Users {
         this.password = password;
     }
 
-    public Users() {
+    public User() {
     }
 
-    public Users(Integer id, String email, String firstName, String lastName, String phone, RoleDto roleDto, String password) {
+    public User(Integer id, String email, String firstName, String lastName, String phone, RoleDto roleDto, String password) {
         this.id = id;
         this.email = email;
         this.firstName = firstName;
