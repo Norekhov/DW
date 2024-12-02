@@ -5,10 +5,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.dto.Ad;
-import ru.skypro.homework.dto.Ads;
-import ru.skypro.homework.dto.CreateOrUpdateAd;
-import ru.skypro.homework.dto.ExtendedAd;
+import ru.skypro.homework.dto.AdDto;
+import ru.skypro.homework.dto.AdsDto;
+import ru.skypro.homework.dto.CreateOrUpdateAdDto;
+import ru.skypro.homework.dto.ExtendedAdDto;
 import ru.skypro.homework.service.AdsService;
 
 @RestController
@@ -21,27 +21,27 @@ public class AdsController {
 
     @GetMapping
     @Operation(summary = "Получение всех объявлений")
-    public Ads getAllAds() {
+    public AdsDto getAllAds() {
         return adsService.getAllAds();
     }
 
     @PostMapping
     @Operation(summary = "Добавление объявления")
-    public Ad addAd(@RequestParam("image") MultipartFile image,
-                    @RequestBody CreateOrUpdateAd ad) {
+    public AdDto addAd(@RequestParam("image") MultipartFile image,
+                       @RequestBody CreateOrUpdateAdDto ad) {
         return adsService.addAd(image, ad);
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Получение информации об объявлении")
-    public ExtendedAd getAdById(@PathVariable Integer id) {
+    public ExtendedAdDto getAdById(@PathVariable Integer id) {
         return adsService.getAdById(id);
     }
 
     @PatchMapping("/{id}")
     @Operation(summary = "Обновление информации об объявлении")
     public String updateAd(@PathVariable Integer id,
-                           @RequestBody CreateOrUpdateAd ad) {
+                           @RequestBody CreateOrUpdateAdDto ad) {
         adsService.updateAd(id, ad);
         return "Объявление успешно обновлено";
     }
@@ -55,14 +55,14 @@ public class AdsController {
 
     @GetMapping("/me")
     @Operation(summary = "Получение объявлений авторизованного пользователя")
-    public Ads getUserAds() {
+    public AdsDto getUserAds() {
         return adsService.getUserAds();
     }
 
     @PatchMapping("/{id}/image")
     @Operation(summary = "Обновление картинки объявления")
     public String updateUserImage(@PathVariable Integer id,
-                                  @RequestBody CreateOrUpdateAd ad) {
+                                  @RequestBody CreateOrUpdateAdDto ad) {
         return null;
     }
 

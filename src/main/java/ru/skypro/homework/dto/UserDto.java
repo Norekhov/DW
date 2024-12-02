@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Objects;
 
-public class User {
+public class UserDto {
     @Schema(type = "integer",
             format = "int32",
             description = "id пользователя")
@@ -29,7 +29,7 @@ public class User {
     @Schema(type = "string",
             description = "роль пользователя",
             allowableValues = {"USER", "ADMIN"})
-    private Role role;
+    private RoleDto roleDto;
 
     @Schema(type = "string",
             description = "ссылка на аватар пользователя")
@@ -43,7 +43,7 @@ public class User {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", phone='" + phone + '\'' +
-                ", role=" + role +
+                ", role=" + roleDto +
                 ", image='" + image + '\'' +
                 '}';
     }
@@ -52,13 +52,13 @@ public class User {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(email, user.email) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(phone, user.phone) && role == user.role && Objects.equals(image, user.image);
+        UserDto userDto = (UserDto) o;
+        return Objects.equals(id, userDto.id) && Objects.equals(email, userDto.email) && Objects.equals(firstName, userDto.firstName) && Objects.equals(lastName, userDto.lastName) && Objects.equals(phone, userDto.phone) && roleDto == userDto.roleDto && Objects.equals(image, userDto.image);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, email, firstName, lastName, phone, role, image);
+        return Objects.hash(id, email, firstName, lastName, phone, roleDto, image);
     }
 
     public Integer getId() {
@@ -101,12 +101,12 @@ public class User {
         this.phone = phone;
     }
 
-    public Role getRole() {
-        return role;
+    public RoleDto getRole() {
+        return roleDto;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setRole(RoleDto roleDto) {
+        this.roleDto = roleDto;
     }
 
     public String getImage() {
@@ -117,16 +117,16 @@ public class User {
         this.image = image;
     }
 
-    public User() {
+    public UserDto() {
     }
 
-    public User(Integer id, String email, String firstName, String lastName, String phone, Role role, String image) {
+    public UserDto(Integer id, String email, String firstName, String lastName, String phone, RoleDto roleDto, String image) {
         this.id = id;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
-        this.role = role;
+        this.roleDto = roleDto;
         this.image = image;
     }
 }
