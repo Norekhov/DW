@@ -1,17 +1,20 @@
 package ru.skypro.homework.service.impl;
 
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import ru.skypro.homework.dto.NewPasswordDto;
+import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.repository.UserRepository;
+import ru.skypro.homework.service.CustomUserDetailsManager;
+
 @Service
-public class UserDetailsManagerImpl implements UserDetailsManager {
+public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
 
     private final UserRepository userRepository;
 
-    public UserDetailsManagerImpl(UserRepository userRepository) {
+    public CustomUserDetailsManagerImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -33,6 +36,20 @@ public class UserDetailsManagerImpl implements UserDetailsManager {
     @Override
     public void deleteUser(String username) {
 
+    }
+
+    public void changePassword(NewPasswordDto newPasswordDto) {
+        changePassword(newPasswordDto.getCurrentPassword(), newPasswordDto.getNewPassword());
+    }
+
+    @Override
+    public String updateUser(UpdateUserDto updateUserDto) {
+        return "";
+    }
+
+    @Override
+    public String updateUserImage(MultipartFile image) {
+        return "";
     }
 
     @Override
