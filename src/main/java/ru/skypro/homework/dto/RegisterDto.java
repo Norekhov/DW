@@ -40,7 +40,7 @@ public class RegisterDto {
     @Schema(type = "string",
             description = "роль пользователя",
             allowableValues = {"USER", "ADMIN"})
-    private RoleDto roleDto;
+    private Role role;
 
     @Override
     public String toString() {
@@ -50,7 +50,7 @@ public class RegisterDto {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", phone='" + phone + '\'' +
-                ", role=" + roleDto +
+                ", role=" + role +
                 '}';
     }
 
@@ -59,12 +59,12 @@ public class RegisterDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         RegisterDto registerDto = (RegisterDto) o;
-        return Objects.equals(username, registerDto.username) && Objects.equals(password, registerDto.password) && Objects.equals(firstName, registerDto.firstName) && Objects.equals(lastName, registerDto.lastName) && Objects.equals(phone, registerDto.phone) && roleDto == registerDto.roleDto;
+        return Objects.equals(username, registerDto.username) && Objects.equals(password, registerDto.password) && Objects.equals(firstName, registerDto.firstName) && Objects.equals(lastName, registerDto.lastName) && Objects.equals(phone, registerDto.phone) && role == registerDto.role;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(username, password, firstName, lastName, phone, roleDto);
+        return Objects.hash(username, password, firstName, lastName, phone, role);
     }
 
     public String getUsername() {
@@ -107,23 +107,23 @@ public class RegisterDto {
         this.phone = phone;
     }
 
-    public RoleDto getRole() {
-        return roleDto;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRole(RoleDto roleDto) {
-        this.roleDto = roleDto;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public RegisterDto() {
     }
 
-    public RegisterDto(String username, String password, String firstName, String lastName, String phone, RoleDto roleDto) {
+    public RegisterDto(String username, String password, String firstName, String lastName, String phone, Role role) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
-        this.roleDto = roleDto;
+        this.role = role;
     }
 }

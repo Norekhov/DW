@@ -7,21 +7,21 @@ public class UserMapper {
     public UserDto toDto(User user) {
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
-        userDto.setEmail(user.getEmail());
+        userDto.setEmail(user.getUsername());
         userDto.setFirstName(user.getFirstName());
         userDto.setLastName(user.getLastName());
         userDto.setPhone(user.getPhone());
-        userDto.setRole(user.getRoleDto());
+        userDto.setRole(user.getRole());
         return userDto;
     }
     public User toUser(UserDto userDto) {
         User user = new User();
         user.setId(userDto.getId());
-        user.setEmail(userDto.getEmail());
+        user.setUsername(userDto.getEmail());
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
         user.setPhone(userDto.getPhone());
-        user.setRoleDto(userDto.getRole());
+        user.setRole(userDto.getRole());
         return user;
     }
 }

@@ -29,7 +29,7 @@ public class UserDto {
     @Schema(type = "string",
             description = "роль пользователя",
             allowableValues = {"USER", "ADMIN"})
-    private RoleDto roleDto;
+    private Role role;
 
     @Schema(type = "string",
             description = "ссылка на аватар пользователя")
@@ -43,7 +43,7 @@ public class UserDto {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", phone='" + phone + '\'' +
-                ", role=" + roleDto +
+                ", role=" + role +
                 ", image='" + image + '\'' +
                 '}';
     }
@@ -53,12 +53,12 @@ public class UserDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserDto userDto = (UserDto) o;
-        return Objects.equals(id, userDto.id) && Objects.equals(email, userDto.email) && Objects.equals(firstName, userDto.firstName) && Objects.equals(lastName, userDto.lastName) && Objects.equals(phone, userDto.phone) && roleDto == userDto.roleDto && Objects.equals(image, userDto.image);
+        return Objects.equals(id, userDto.id) && Objects.equals(email, userDto.email) && Objects.equals(firstName, userDto.firstName) && Objects.equals(lastName, userDto.lastName) && Objects.equals(phone, userDto.phone) && role == userDto.role && Objects.equals(image, userDto.image);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, email, firstName, lastName, phone, roleDto, image);
+        return Objects.hash(id, email, firstName, lastName, phone, role, image);
     }
 
     public Integer getId() {
@@ -101,12 +101,12 @@ public class UserDto {
         this.phone = phone;
     }
 
-    public RoleDto getRole() {
-        return roleDto;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRole(RoleDto roleDto) {
-        this.roleDto = roleDto;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public String getImage() {
@@ -120,13 +120,13 @@ public class UserDto {
     public UserDto() {
     }
 
-    public UserDto(Integer id, String email, String firstName, String lastName, String phone, RoleDto roleDto, String image) {
+    public UserDto(Integer id, String email, String firstName, String lastName, String phone, Role role, String image) {
         this.id = id;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
-        this.roleDto = roleDto;
+        this.role = role;
         this.image = image;
     }
 }

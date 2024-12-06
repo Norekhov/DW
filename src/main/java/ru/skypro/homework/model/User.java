@@ -1,18 +1,27 @@
 package ru.skypro.homework.model;
 
-import ru.skypro.homework.dto.RoleDto;
+import org.hibernate.annotations.ColumnDefault;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import ru.skypro.homework.dto.Role;
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name="users")
-public class User {
+@Table(name = "users")
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    private String email;
+    private String username;
+
+    private String password;
 
     private String firstName;
 
@@ -21,21 +30,35 @@ public class User {
     private String phone;
 
     @Enumerated(EnumType.STRING)
-    private RoleDto roleDto;
+    @ColumnDefault("USER")
+    private Role role;
 
-    private String password;
+    private Integer enabled;
+
+    public User() {
+    }
+
+    public User(Integer id, String username, String firstName, String lastName, String phone, Role role, String password) {
+        this.id = id;
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.role = role;
+        this.password = password;
+    }
+
+    public Integer getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Integer enabled) {
+        this.enabled = enabled;
+    }
 
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", phone='" + phone + '\'' +
-                ", roleDto=" + roleDto +
-                ", password='" + password + '\'' +
-                '}';
+        return "User{" + "id=" + id + ", username='" + username + '\'' + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", phone='" + phone + '\'' + ", roleDto=" + role + ", password='" + password + '\'' + '}';
     }
 
     @Override
@@ -43,12 +66,12 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(email, user.email) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(phone, user.phone) && roleDto == user.roleDto && Objects.equals(password, user.password);
+        return Objects.equals(id, user.id) && Objects.equals(username, user.username) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(phone, user.phone) && role == user.role && Objects.equals(password, user.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, email, firstName, lastName, phone, roleDto, password);
+        return Objects.hash(id, username, firstName, lastName, phone, role, password);
     }
 
     public Integer getId() {
@@ -59,12 +82,32 @@ public class User {
         this.id = id;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return 1==getEnabled();//todo rename users_enabled to users_status and make enum for status
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getFirstName() {
@@ -91,12 +134,18 @@ public class User {
         this.phone = phone;
     }
 
-    public RoleDto getRoleDto() {
-        return roleDto;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRoleDto(RoleDto roleDto) {
-        this.roleDto = roleDto;
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singletonList(
+                new SimpleGrantedAuthority("ROLE_" + getRole()));
     }
 
     public String getPassword() {
@@ -104,19 +153,6 @@ public class User {
     }
 
     public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public User() {
-    }
-
-    public User(Integer id, String email, String firstName, String lastName, String phone, RoleDto roleDto, String password) {
-        this.id = id;
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phone = phone;
-        this.roleDto = roleDto;
         this.password = password;
     }
 }
