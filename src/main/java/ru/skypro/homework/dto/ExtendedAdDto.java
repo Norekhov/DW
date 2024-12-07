@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Objects;
 
-public class ExtendedAd {
+public class ExtendedAdDto {
 
     @Schema(type = "integer",
             format = "int32",
@@ -63,7 +63,7 @@ public class ExtendedAd {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ExtendedAd that = (ExtendedAd) o;
+        ExtendedAdDto that = (ExtendedAdDto) o;
         return Objects.equals(pk, that.pk) && Objects.equals(authorFirstName, that.authorFirstName) && Objects.equals(authorLastName, that.authorLastName) && Objects.equals(description, that.description) && Objects.equals(email, that.email) && Objects.equals(image, that.image) && Objects.equals(phone, that.phone) && Objects.equals(price, that.price) && Objects.equals(title, that.title);
     }
 
@@ -144,10 +144,10 @@ public class ExtendedAd {
         this.title = title;
     }
 
-    public ExtendedAd() {
+    public ExtendedAdDto() {
     }
 
-    public ExtendedAd(Integer pk, String authorFirstName, String authorLastName, String description, String email, String image, String phone, Integer price, String title) {
+    public ExtendedAdDto(Integer pk, String authorFirstName, String authorLastName, String description, String email, String image, String phone, Integer price, String title) {
         this.pk = pk;
         this.authorFirstName = authorFirstName;
         this.authorLastName = authorLastName;

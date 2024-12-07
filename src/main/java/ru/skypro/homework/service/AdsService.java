@@ -1,35 +1,33 @@
 package ru.skypro.homework.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
 
 @Service
 public class AdsService {
 
-    public Ads getAllAds() {
+    public AdsDto getAllAds() {
         return null;
     }
 
-    public Ad addAd(MultipartFile image, CreateOrUpdateAd ad) {
+    public AdDto addAd(MultipartFile image, CreateOrUpdateAdDto ad) {
         return null;
     }
 
-    public ExtendedAd getAdById(Integer id) {
+    public ExtendedAdDto getAdById(Integer id) {
         return null;
     }
 
-    public Ads getUserAds() {
+    public AdsDto getUserAds() {
         return null;
     }
 
-    public User updateUserImage(Integer id, CreateOrUpdateAd ad) {
+    public UserDto updateUserImage(Integer id, CreateOrUpdateAdDto ad) {
         return null;
     }
 
-    public void updateAd(Integer id, CreateOrUpdateAd ad) {
+    public void updateAd(Integer id, CreateOrUpdateAdDto ad) {
     }
 
     public void removeAd(Integer id) {

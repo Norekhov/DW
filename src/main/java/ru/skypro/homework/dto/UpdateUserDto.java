@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Objects;
 
-public class UpdateUser {
+public class UpdateUserDto {
     @Schema(type = "string",
             description = "имя пользователя",
             minLength = 3,
@@ -35,7 +35,7 @@ public class UpdateUser {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UpdateUser that = (UpdateUser) o;
+        UpdateUserDto that = (UpdateUserDto) o;
         return Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(phone, that.phone);
     }
 
@@ -68,10 +68,10 @@ public class UpdateUser {
         this.phone = phone;
     }
 
-    public UpdateUser() {
+    public UpdateUserDto() {
     }
 
-    public UpdateUser(String firstName, String lastName, String phone) {
+    public UpdateUserDto(String firstName, String lastName, String phone) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
