@@ -2,6 +2,8 @@ package ru.skypro.homework.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.skypro.homework.dto.CommentDto;
@@ -13,9 +15,13 @@ import ru.skypro.homework.service.CommentService;
 @RequestMapping("/ads")
 @Tag(name = "Комментарии")
 public class CommentController {
+    private static final Logger log = LoggerFactory.getLogger(CommentController.class);
 
-    @Autowired
-    private CommentService commentService;
+    private final CommentService commentService;
+
+    public CommentController(CommentService commentService) {
+        this.commentService = commentService;
+    }
 
     @GetMapping("/{id}/comments")
     @Operation(summary = "Получение комментариев объявления")

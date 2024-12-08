@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.UpdateUserDto;
-import ru.skypro.homework.dto.UserDto;
+import ru.skypro.homework.dto.UserApiDto;
 import ru.skypro.homework.mapper.UserMapper;
 import ru.skypro.homework.model.User;
 import ru.skypro.homework.service.CustomUserDetailsManager;
@@ -18,34 +18,33 @@ import ru.skypro.homework.service.CustomUserDetailsManager;
 @Tag(name = "Пользователи")
 public class UserController {
 
-    private final CustomUserDetailsManager userService;
+    private final CustomUserDetailsManager userDetailsManager;
 
-    public UserController(CustomUserDetailsManager userService) {
-        this.userService = userService;
+    public UserController(CustomUserDetailsManager userDetailsManager) {
+        this.userDetailsManager = userDetailsManager;
     }
 
     @PostMapping("/set_password")
     @Operation(summary = "Обновление пароля")
     public void setPassword(@RequestBody NewPasswordDto newPasswordDto) {
-        userService.changePassword(newPasswordDto);
+        userDetailsManager.changePassword(newPasswordDto);
     }
 
     @GetMapping("/me")
     @Operation(summary = "Получение информации об авторизованном пользователе")
-    public UserDto getUser() {
-        UserMapper mapper = new UserMapper();
-        return mapper.toDto((User) userService.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName()));
+    public UserApiDto getUser() {
+        return UserMapper.toApi(userDetailsManager.getCurrentUser());
     }
 
     @PatchMapping("/me")
     @Operation(summary = "Обновление информации об авторизованном пользователе")
-    public String updateUser(@RequestBody UpdateUserDto updateUserDto) {
-        return userService.updateUser(updateUserDto);
+    public UpdateUserDto updateUser(@RequestBody UpdateUserDto updateUserDto) {
+        return userDetailsManager.updateUser(updateUserDto);
     }
 
     @PatchMapping("/me/image")
     @Operation(summary = "Обновление аватара авторизованного пользователя")
     public String updateUserImage(@RequestParam("image") MultipartFile image) {
-        return userService.updateUserImage(image);
+        return userDetailsManager.updateUserImage(image);
     }
 }

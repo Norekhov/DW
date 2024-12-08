@@ -23,7 +23,7 @@ public class AdsService {
         return null;
     }
 
-    public UserDto updateUserImage(Integer id, CreateOrUpdateAdDto ad) {
+    public UserApiDto updateUserImage(Integer id, CreateOrUpdateAdDto ad) {
         return null;
     }
 

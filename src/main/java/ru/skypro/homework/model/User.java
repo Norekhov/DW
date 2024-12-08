@@ -1,20 +1,15 @@
 package ru.skypro.homework.model;
 
 import org.hibernate.annotations.ColumnDefault;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import ru.skypro.homework.dto.Role;
 
-import javax.persistence.*;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import jakarta.persistence.*;
+
 import java.util.Objects;
 
 @Entity
 @Table(name = "users")
-public class User implements UserDetails {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
@@ -38,7 +33,7 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(Integer id, String username, String firstName, String lastName, String phone, Role role, String password) {
+    public User(Integer id, String username, String firstName, String lastName, String phone, Role role, String password, Integer enabled) {
         this.id = id;
         this.username = username;
         this.firstName = firstName;
@@ -46,9 +41,10 @@ public class User implements UserDetails {
         this.phone = phone;
         this.role = role;
         this.password = password;
+        this.enabled = enabled;
     }
 
-    public Integer getEnabled() {
+    public Integer isEnabled() {
         return enabled;
     }
 
@@ -86,26 +82,6 @@ public class User implements UserDetails {
         return username;
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return 1==getEnabled();//todo rename users_enabled to users_status and make enum for status
-    }
-
     public void setUsername(String username) {
         this.username = username;
     }
@@ -140,12 +116,6 @@ public class User implements UserDetails {
 
     public void setRole(Role role) {
         this.role = role;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(
-                new SimpleGrantedAuthority("ROLE_" + getRole()));
     }
 
     public String getPassword() {

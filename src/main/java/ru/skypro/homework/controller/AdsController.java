@@ -2,6 +2,8 @@ package ru.skypro.homework.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,9 +17,13 @@ import ru.skypro.homework.service.AdsService;
 @RequestMapping("/ads")
 @Tag(name = "Объявления")
 public class AdsController {
+    private static final Logger log = LoggerFactory.getLogger(AdsController.class);
 
-    @Autowired
-    private AdsService adsService;
+    private final AdsService adsService;
+
+    public AdsController(AdsService adsService) {
+        this.adsService = adsService;
+    }
 
     @GetMapping
     @Operation(summary = "Получение всех объявлений")

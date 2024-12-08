@@ -1,11 +1,9 @@
 package ru.skypro.homework.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
 
 import java.util.Objects;
 
-@Data
 public class LoginDto {
 
     @Schema(type = "string",
@@ -19,6 +17,14 @@ public class LoginDto {
             minLength = 4,
             maxLength = 32)
     private String username;
+
+    public LoginDto() {
+    }
+
+    public LoginDto(String password, String username) {
+        this.password = password;
+        this.username = username;
+    }
 
     @Override
     public String toString() {
@@ -54,14 +60,6 @@ public class LoginDto {
     }
 
     public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public LoginDto() {
-    }
-
-    public LoginDto(String password, String username) {
-        this.password = password;
         this.username = username;
     }
 }
