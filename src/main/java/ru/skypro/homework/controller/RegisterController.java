@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.skypro.homework.dto.RegisterDto;
 import ru.skypro.homework.service.AuthService;
 
+import java.io.IOException;
+
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
@@ -26,7 +28,7 @@ public class RegisterController {
 
     @PostMapping("/register")
     @Operation(summary = "Регистрация пользователя")
-    public ResponseEntity<?> register(@RequestBody RegisterDto registerDto) {
+    public ResponseEntity<?> register(@RequestBody RegisterDto registerDto) throws IOException {
         if (authService.register(registerDto)) {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } else {

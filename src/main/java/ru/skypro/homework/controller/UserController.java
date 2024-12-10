@@ -2,25 +2,32 @@ package ru.skypro.homework.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
+import ru.skypro.homework.service.UserAvatarService;
 import ru.skypro.homework.service.UserService;
 
+import java.io.IOException;
 
+@CrossOrigin(value = "http://localhost:3000")
 @RestController
 @RequestMapping("/users")
 @Tag(name = "Пользователи")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserAvatarService userAvatarService;
+    private final UserService userService;
+
+    public UserController(UserAvatarService userAvatarService, UserService userService) {
+        this.userAvatarService = userAvatarService;
+        this.userService = userService;
+    }
 
     @PostMapping("/set_password")
     @Operation(summary = "Обновление пароля")
-    public String setPassword(@RequestBody NewPasswordDto newPasswordDto) {
-        return userService.setPassword(newPasswordDto);
+    public void  setPassword(@RequestBody NewPasswordDto newPasswordDto) {
+        userService.setPassword(newPasswordDto);
     }
 
     @GetMapping("/me")
@@ -31,13 +38,13 @@ public class UserController {
 
     @PatchMapping("/me")
     @Operation(summary = "Обновление информации об авторизованном пользователе")
-    public String updateUser(@RequestBody UpdateUserDto updateUserDto) {
+    public UpdateUserDto updateUser(@RequestBody UpdateUserDto updateUserDto) {
         return userService.updateUser(updateUserDto);
     }
 
     @PatchMapping("/me/image")
     @Operation(summary = "Обновление аватара авторизованного пользователя")
-    public String updateUserImage(@RequestParam("image") MultipartFile image) {
-        return userService.updateUserImage(image);
+    public void updateUserAvatar(@RequestParam("image") MultipartFile image) throws IOException {
+        userAvatarService.updateUserAvatar(image);
     }
 }

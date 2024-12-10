@@ -2,6 +2,7 @@ package ru.skypro.homework.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import ru.skypro.homework.service.СheckService;
 
 import java.util.Objects;
 
@@ -72,7 +73,11 @@ public class RegisterDto {
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        if (СheckService.checkLength(username, 4, 32) && СheckService.checkUsername(username)) {
+            this.username = username;
+        } else {
+            throw new IllegalArgumentException("Длина логина от 4 до 32 символов в формате \"yourmail@mail.ru\"");
+        }
     }
 
     public String getPassword() {
@@ -80,7 +85,11 @@ public class RegisterDto {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        if (СheckService.checkLength(password, 8, 16)) {
+            this.password = password;
+        } else {
+            throw new IllegalArgumentException("Длина пароля от 8 до 16 символов");
+        }
     }
 
     public String getFirstName() {
@@ -88,7 +97,11 @@ public class RegisterDto {
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        if (СheckService.checkLength(firstName, 2, 16) && СheckService.checkSymbol(firstName)) {
+            this.firstName = firstName;
+        } else {
+            throw new IllegalArgumentException("Длина имени от 2 до 16 символов");
+        }
     }
 
     public String getLastName() {
@@ -96,7 +109,11 @@ public class RegisterDto {
     }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+        if (СheckService.checkLength(lastName, 2, 16) && СheckService.checkSymbol(lastName)) {
+            this.lastName = lastName;
+        } else {
+            throw new IllegalArgumentException("Длина фамилии от 2 до 16 символов");
+        }
     }
 
     public String getPhone() {
@@ -104,7 +121,11 @@ public class RegisterDto {
     }
 
     public void setPhone(String phone) {
-        this.phone = phone;
+        if (СheckService.checkPhone(phone)) {
+            this.phone = phone;
+        } else {
+            throw new IllegalArgumentException("Формат номера телефона +7(000)000-00-00");
+        }
     }
 
     public RoleDto getRole() {

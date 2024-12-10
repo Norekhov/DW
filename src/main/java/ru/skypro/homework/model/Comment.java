@@ -14,7 +14,7 @@ public class Comment {
     private String text;
 
     @Column(name = "createdat")
-    private Integer createdAt;
+    private long createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -68,11 +68,11 @@ public class Comment {
         this.text = text;
     }
 
-    public Integer getCreatedAt() {
+    public long getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Integer createdAt) {
+    public void setCreatedAt(long createdAt) {
         this.createdAt = createdAt;
     }
 
