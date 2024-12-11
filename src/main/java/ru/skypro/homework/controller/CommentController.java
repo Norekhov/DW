@@ -2,14 +2,12 @@ package ru.skypro.homework.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.skypro.homework.dto.CommentDto;
 import ru.skypro.homework.dto.CommentsDto;
 import ru.skypro.homework.dto.CreateOrUpdateCommentDto;
 import ru.skypro.homework.service.CommentService;
+
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
 @RequestMapping("/ads")
@@ -38,17 +36,17 @@ public class CommentController {
 
     @PatchMapping("/{adId}/comments/{commentId}")
     @Operation(summary = "Обновление комментария")
-    public String updateComment(@PathVariable Integer adId,
-                                @PathVariable Integer commentId,
-                                @RequestBody CreateOrUpdateCommentDto comment) {
-        commentService.updateComment(adId, commentId, comment);
-        return "Комментарий успешно обновлён";
+    public CommentDto updateComment(@PathVariable Integer adId,
+                                    @PathVariable Integer commentId,
+                                    @RequestBody CreateOrUpdateCommentDto comment) {
+        return commentService.updateComment(adId, commentId, comment);
     }
+
 
     @DeleteMapping("/{adId}/comments/{commentId}")
     @Operation(summary = "Удаление комментария")
-    public String deleteComment(@PathVariable Integer adId, @PathVariable Integer commentId) {
+    public void deleteComment(@PathVariable Integer adId,
+                              @PathVariable Integer commentId) {
         commentService.deleteComment(adId, commentId);
-        return "Комментарий успешно удалён";
     }
 }
