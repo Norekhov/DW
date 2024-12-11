@@ -15,6 +15,13 @@ public class UserMapper {
         userApiDto.setRole(user.getRole());
         return userApiDto;
     }
+    public static UpdateUserDto toUpdateUserDto(User from) {
+        UpdateUserDto to = new UpdateUserDto();
+        to.setFirstName(from.getFirstName());
+        to.setLastName(from.getLastName());
+        to.setPhone(from.getPhone());
+        return to;
+    }
     public static User toUser(UserApiDto userApiDto) {
         User user = new User();
         user.setId(userApiDto.getId());

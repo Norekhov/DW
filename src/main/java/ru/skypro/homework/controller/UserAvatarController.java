@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.skypro.homework.service.UserAvatarService;
+import ru.skypro.homework.service.impl.UserAvatarService;
 
 import java.io.IOException;
 

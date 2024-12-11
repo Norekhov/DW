@@ -1,4 +1,4 @@
-package ru.skypro.homework.service;
+package ru.skypro.homework.service.impl;
 
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;

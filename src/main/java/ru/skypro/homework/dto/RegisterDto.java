@@ -1,7 +1,7 @@
 package ru.skypro.homework.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import ru.skypro.homework.service.СheckService;
+import ru.skypro.homework.service.impl.СheckServiceImpl;
 
 import java.util.Objects;
 
@@ -71,7 +71,7 @@ public class RegisterDto {
     }
 
     public void setUsername(String username) {
-        if (СheckService.checkLength(username, 4, 32) && СheckService.checkUsername(username)) {
+        if (СheckServiceImpl.checkLength(username, 4, 32) && СheckServiceImpl.checkUsername(username)) {
             this.username = username;
         } else {
             throw new IllegalArgumentException("Длина логина от 4 до 32 символов в формате \"yourmail@mail.ru\"");
@@ -83,7 +83,7 @@ public class RegisterDto {
     }
 
     public void setPassword(String password) {
-        if (СheckService.checkLength(password, 8, 16)) {
+        if (СheckServiceImpl.checkLength(password, 8, 16)) {
             this.password = password;
         } else {
             throw new IllegalArgumentException("Длина пароля от 8 до 16 символов");
@@ -95,7 +95,7 @@ public class RegisterDto {
     }
 
     public void setFirstName(String firstName) {
-        if (СheckService.checkLength(firstName, 2, 16) && СheckService.checkSymbol(firstName)) {
+        if (СheckServiceImpl.checkLength(firstName, 2, 16) && СheckServiceImpl.checkSymbol(firstName)) {
             this.firstName = firstName;
         } else {
             throw new IllegalArgumentException("Длина имени от 2 до 16 символов");
@@ -107,7 +107,7 @@ public class RegisterDto {
     }
 
     public void setLastName(String lastName) {
-        if (СheckService.checkLength(lastName, 2, 16) && СheckService.checkSymbol(lastName)) {
+        if (СheckServiceImpl.checkLength(lastName, 2, 16) && СheckServiceImpl.checkSymbol(lastName)) {
             this.lastName = lastName;
         } else {
             throw new IllegalArgumentException("Длина фамилии от 2 до 16 символов");
@@ -119,7 +119,7 @@ public class RegisterDto {
     }
 
     public void setPhone(String phone) {
-        if (СheckService.checkPhone(phone)) {
+        if (СheckServiceImpl.checkPhone(phone)) {
             this.phone = phone;
         } else {
             throw new IllegalArgumentException("Формат номера телефона +7(000)000-00-00");

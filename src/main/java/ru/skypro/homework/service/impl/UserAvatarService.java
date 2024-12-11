@@ -1,4 +1,4 @@
-package ru.skypro.homework.service;
+package ru.skypro.homework.service.impl;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;
@@ -9,6 +9,7 @@ import ru.skypro.homework.exception.UserAvatarException;
 import ru.skypro.homework.model.User;
 import ru.skypro.homework.model.UserAvatar;
 import ru.skypro.homework.repository.UserAvatarRepository;
+import ru.skypro.homework.service.CustomUserDetailsManager;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -19,14 +20,14 @@ import java.util.UUID;
 @Service
 public class UserAvatarService {
 
-    private final ContextService contextService;
+    private final CustomUserDetailsManager customUserDetailsManager;
     private final UserAvatarRepository userAvatarRepository;
     private final Path path;
 
-    public UserAvatarService(ContextService contextService,
+    public UserAvatarService(CustomUserDetailsManager customUserDetailsManager,
                              UserAvatarRepository userAvatarRepository,
                              @Value("${application.avatars-dir-name}") String avatarsDirName) {
-        this.contextService = contextService;
+        this.customUserDetailsManager = customUserDetailsManager;
         this.userAvatarRepository = userAvatarRepository;
         this.path = Path.of(avatarsDirName);
     }
@@ -60,7 +61,7 @@ public class UserAvatarService {
     }
 
     public void updateUserAvatar(MultipartFile image) throws IOException {
-        User user = contextService.getRecognizedUserFromDb();
+        User user = customUserDetailsManager.getCurrentUser();
 
         UserAvatar userAvatarDb = userAvatarRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new UserAvatarException("Не найден аватар для пользователя: " + user.getId()));

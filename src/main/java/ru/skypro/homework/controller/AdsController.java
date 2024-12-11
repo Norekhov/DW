@@ -2,15 +2,17 @@ package ru.skypro.homework.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.AdDto;
-import ru.skypro.homework.dto.AdsDto;
+import ru.skypro.homework.dto.AdListDto;
 import ru.skypro.homework.dto.CreateOrUpdateAdDto;
 import ru.skypro.homework.dto.ExtendedAdDto;
-import ru.skypro.homework.service.AdPictureService;
-import ru.skypro.homework.service.AdsService;
+import ru.skypro.homework.service.impl.AdPictureService;
+import ru.skypro.homework.service.impl.AdsService;
 
 import java.io.IOException;
 
@@ -32,7 +34,7 @@ public class AdsController {
 
     @GetMapping
     @Operation(summary = "Получение всех объявлений")
-    public AdsDto getAllAds() {
+    public AdListDto getAllAds() {
         return adsService.getAllAds();
     }
 
@@ -60,12 +62,11 @@ public class AdsController {
     @Operation(summary = "Удаление объявления")
     public void removeAd(@PathVariable Integer id) {
         adsService.removeAd(id);
-        return "Объявление успешно удалено";
     }
 
     @GetMapping("/me")
     @Operation(summary = "Получение объявлений авторизованного пользователя")
-    public AdsDto getUserAds() {
+    public AdListDto getUserAds() {
         return adsService.getUserAds();
     }
 

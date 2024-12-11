@@ -66,21 +66,20 @@ public class WebSecurityConfig {
                 .cors(customizer ->
                     customizer.configurationSource(corsConfigurationSource()))
                 .httpBasic(Customizer.withDefaults())
-//                .formLogin(customizer -> customizer.loginPage("/sign-in"))
                 .build();
     }
 
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder(10);
-//    }
-
     @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        System.out.println("------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider");
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(new BCryptPasswordEncoder(10));
-        provider.setUserDetailsService(userDetailsService);
-        return provider;
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(10);
     }
+
+//    @Bean
+//    public DaoAuthenticationProvider authenticationProvider() {
+//        System.out.println("------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider");
+//        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+//        provider.setPasswordEncoder(passwordEncoder());
+//        provider.setUserDetailsService(userDetailsService);
+//        return provider;
+//    }
 }

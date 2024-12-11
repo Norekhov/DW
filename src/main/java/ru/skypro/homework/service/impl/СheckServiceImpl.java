@@ -1,11 +1,12 @@
-package ru.skypro.homework.service;
+package ru.skypro.homework.service.impl;
 
 import org.springframework.stereotype.Service;
+import ru.skypro.homework.service.CheckService;
 
 import java.util.regex.Pattern;
 
 @Service
-public class СheckService {
+public class СheckServiceImpl implements CheckService {
 
     public static boolean checkLength(String name, int min, int max) {
         return name.length() >= min && name.length() <= max;

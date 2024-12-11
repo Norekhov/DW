@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
-import ru.skypro.homework.service.UserAvatarService;
+import ru.skypro.homework.service.impl.UserAvatarService;
 import ru.skypro.homework.service.CustomUserDetailsManager;
 import ru.skypro.homework.mapper.UserMapper;
 
@@ -34,7 +34,7 @@ public class UserController {
     @GetMapping("/me")
     @Operation(summary = "Получение информации об авторизованном пользователе")
     public UserApiDto getUser() {
-        return UserMapper.toApi(userDetailsManager.getCurrentUser());
+        return UserMapper.toApi(userService.getCurrentUser());
     }
 
     @PatchMapping("/me")
