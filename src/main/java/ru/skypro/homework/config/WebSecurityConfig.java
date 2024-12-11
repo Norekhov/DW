@@ -3,34 +3,50 @@ package ru.skypro.homework.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import ru.skypro.homework.service.CustomUserDetailsManager;
 
 import java.util.List;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 @Configuration
+@EnableWebSecurity
 public class WebSecurityConfig {
 
-    private static final String[] AUTH_WHITELIST = {"/swagger-resources/**", "/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs", "/webjars/**", "/login", "/register"};
+    private static final String[] AUTH_WHITELIST = {
+            "/swagger-resources/**",
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/v3/api-docs",
+            "/webjars/**",
+            "/login",
+            "/register"};
+    private final CustomUserDetailsManager userDetailsService;
 
-    @Bean
-    WebSecurityCustomizer webSecurityCustomizer() {
-        return (webSecurity) -> webSecurity.ignoring().requestMatchers(AUTH_WHITELIST).requestMatchers(HttpMethod.GET, "/ads");
+    public WebSecurityConfig(CustomUserDetailsManager userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
+
+//    @Bean
+//    WebSecurityCustomizer webSecurityCustomizer() {
+//        return (webSecurity) -> webSecurity.ignoring().requestMatchers(AUTH_WHITELIST).requestMatchers(HttpMethod.GET, "/ads");
+//    }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000"));
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000","http://localhost:3000/"));
         corsConfiguration.setAllowedMethods(List.of("DELETE", "GET", "OPTIONS", "PATCH", "POST", "PUT"));
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.setAllowedHeaders(List.of("*"));
@@ -42,19 +58,29 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request ->
-                        request.requestMatchers("/ads/**", "/users/**")
-                .authenticated())
-                .cors(httpSecurityCorsConfigurer ->
-                        httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
-                .httpBasic(withDefaults());
-        return http.build();
+        return http.csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(request -> request
+                    .requestMatchers(AUTH_WHITELIST).permitAll()
+                    .requestMatchers(HttpMethod.GET, "/ads").permitAll()
+                    .anyRequest().authenticated())
+                .cors(customizer ->
+                    customizer.configurationSource(corsConfigurationSource()))
+                .httpBasic(Customizer.withDefaults())
+//                .formLogin(customizer -> customizer.loginPage("/sign-in"))
+                .build();
     }
+
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        return new BCryptPasswordEncoder(10);
+//    }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public DaoAuthenticationProvider authenticationProvider() {
+        System.out.println("------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider------------WebConfigAuthenticationProvider");
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setPasswordEncoder(new BCryptPasswordEncoder(10));
+        provider.setUserDetailsService(userDetailsService);
+        return provider;
     }
-
 }

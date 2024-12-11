@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.skypro.homework.dto.LoginDto;
-import ru.skypro.homework.service.AuthenticationProviderService;
+import ru.skypro.homework.service.impl.LoginServiceImpl;
 
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
@@ -19,18 +19,19 @@ import ru.skypro.homework.service.AuthenticationProviderService;
 public class LoginController {
     private static final Logger log = LoggerFactory.getLogger(LoginController.class);
 
-    private final AuthenticationProviderService authService;
+    private final LoginServiceImpl authenticationProvider;
 
-    public LoginController(AuthenticationProviderService authService) {
-        this.authService = authService;
+    public LoginController(LoginServiceImpl authenticationProvider) {
+        this.authenticationProvider = authenticationProvider;
     }
+
 
     @PostMapping("/login")
     @Operation(summary = "Авторизация пользователя")
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
-        if (!authService.login(loginDto)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        if (authenticationProvider.login(loginDto)) {
+            return ResponseEntity.ok().build();
         }
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }
