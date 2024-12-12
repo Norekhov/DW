@@ -11,7 +11,6 @@ import ru.skypro.homework.dto.AdDto;
 import ru.skypro.homework.dto.AdListDto;
 import ru.skypro.homework.dto.CreateOrUpdateAdDto;
 import ru.skypro.homework.dto.ExtendedAdDto;
-import ru.skypro.homework.service.impl.AdPictureService;
 import ru.skypro.homework.service.impl.AdsService;
 
 import java.io.IOException;
@@ -23,12 +22,9 @@ import java.io.IOException;
 public class AdsController {
     private static final Logger log = LoggerFactory.getLogger(AdsController.class);
 
-    private final AdPictureService adPictureService;
     private final AdsService adsService;
 
-    public AdsController(AdPictureService adPictureService,
-                         AdsService adsService) {
-        this.adPictureService = adPictureService;
+    public AdsController(AdsService adsService) {
         this.adsService = adsService;
     }
 
@@ -71,10 +67,10 @@ public class AdsController {
     }
 
     @PatchMapping("/{id}/image")
-    @Operation(summary = "Обновление картинки объявления")
-    public String updateAdPicture(@PathVariable Integer id,
-                                  @RequestParam("image") MultipartFile image) throws IOException {
-        return adsService.updateAdPicture(id, image);
+    @Operation(summary = "Обновление изображения объявления")
+    public String updateAdImage(@PathVariable Integer id,
+                                @RequestParam("image") MultipartFile image) throws IOException {
+        return adsService.updateAdImage(id, image);
     }
 
 

@@ -7,6 +7,8 @@ import ru.skypro.homework.dto.RegisterDto;
 import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.model.User;
 
+import java.io.IOException;
+
 public interface CustomUserDetailsManager extends UserDetailsManager {
     void createUser(RegisterDto registerDto);
 
@@ -16,7 +18,11 @@ public interface CustomUserDetailsManager extends UserDetailsManager {
 
     UpdateUserDto updateUser(UpdateUserDto updateUserDto);
 
-    String updateUserImage(MultipartFile image);
-
     User getCurrentUser();
+
+    void updateUserAvatar(MultipartFile image) throws IOException;
+
+    void deleteExistingAvatar(User user) throws IOException;
+
+    byte[] getAvatarFromFs(String avatarId) throws IOException;
 }

@@ -2,10 +2,11 @@ package ru.skypro.homework.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
-import ru.skypro.homework.service.impl.UserAvatarService;
 import ru.skypro.homework.service.CustomUserDetailsManager;
 import ru.skypro.homework.mapper.UserMapper;
 
@@ -16,12 +17,11 @@ import java.io.IOException;
 @RequestMapping("/users")
 @Tag(name = "Пользователи")
 public class UserController {
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    private final UserAvatarService userAvatarService;
     private final CustomUserDetailsManager userService;
 
-    public UserController(UserAvatarService userAvatarService, CustomUserDetailsManager userService) {
-        this.userAvatarService = userAvatarService;
+    public UserController(CustomUserDetailsManager userService) {
         this.userService = userService;
     }
 
@@ -34,6 +34,7 @@ public class UserController {
     @GetMapping("/me")
     @Operation(summary = "Получение информации об авторизованном пользователе")
     public UserApiDto getUser() {
+        log.atWarn().log("UserController.getMe ");
         return UserMapper.toApi(userService.getCurrentUser());
     }
 
@@ -46,6 +47,6 @@ public class UserController {
     @PatchMapping("/me/image")
     @Operation(summary = "Обновление аватара авторизованного пользователя")
     public void updateUserAvatar(@RequestParam("image") MultipartFile image) throws IOException {
-        userAvatarService.updateUserAvatar(image);
+        userService.updateUserAvatar(image);
     }
 }

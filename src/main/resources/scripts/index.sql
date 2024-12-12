@@ -35,7 +35,7 @@ CREATE TABLE userAvatar
     data      BYTEA        NOT NULL,
     userZ_id  INT REFERENCES user (id)
 );
-CREATE TABLE adPicture
+CREATE TABLE adImage
 (
     id        INT          NOT NULL PRIMARY KEY,
     filePath  VARCHAR(255) NOT NULL,

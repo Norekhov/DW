@@ -7,27 +7,26 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.skypro.homework.service.impl.AdPictureService;
+import ru.skypro.homework.service.impl.AdsService;
 
 import java.io.IOException;
 
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
 @RequestMapping("/image")
-@Tag(name = "Картинки объявлений")
-public class AdPictureController {
+@Tag(name = "Изображения объявлений")
+public class AdImageController {
 
-    private final AdPictureService adPictureService;
+    private final AdsService adsService;
 
-    public AdPictureController(AdPictureService adPictureService) {
-        this.adPictureService = adPictureService;
+    public AdImageController(AdsService adsService) {
+        this.adsService = adsService;
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Загрузка картинки объявления")
+    @Operation(summary = "Загрузка изображения объявления")
     public ResponseEntity<byte[]> getImageFromFs(@PathVariable("id") String pathForEndpoint) throws IOException {
-        Pair<byte[], String> imageData = adPictureService.getImageFromFs(pathForEndpoint);
-        return getEntityImage(imageData);
+        return ResponseEntity.ok(adsService.getImageFromFs(pathForEndpoint));
     }
 
     private ResponseEntity<byte[]> getEntityImage(Pair<byte[], String> imageData) {

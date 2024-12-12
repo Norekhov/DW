@@ -13,6 +13,7 @@ public class UserMapper {
         userApiDto.setLastName(user.getLastName());
         userApiDto.setPhone(user.getPhone());
         userApiDto.setRole(user.getRole());
+        userApiDto.setImage(user.getAvatar());
         return userApiDto;
     }
     public static UpdateUserDto toUpdateUserDto(User from) {
@@ -42,15 +43,15 @@ public class UserMapper {
     public static User toUser(RegisterDto registerDto) {
 
         return new User(null, registerDto.getUsername(), registerDto.getFirstName(), registerDto.getLastName()
-                , registerDto.getPhone(), registerDto.getRole(),registerDto.getPassword(), 1);
+                , registerDto.getPhone(), registerDto.getRole(),registerDto.getPassword(), 1, null);
     }
 
     public static User toUser(UserDetails user) {
-        return new User(null, user.getUsername(), null, null, null, Role.USER, user.getPassword(), user.isEnabled()?1:0);
+        return new User(null, user.getUsername(), null, null, null, Role.USER, user.getPassword(), user.isEnabled()?1:0, null);
     }
 
     public static User toUser(User user, UpdateUserDto updateUserDto) {
         return new User(null,user.getUsername(), updateUserDto.getFirstName(), updateUserDto.getLastName(),
-                updateUserDto.getPhone(), user.getRole(), user.getPassword(), user.isEnabled());
+                updateUserDto.getPhone(), user.getRole(), user.getPassword(), user.isEnabled(), null);
     }
 }

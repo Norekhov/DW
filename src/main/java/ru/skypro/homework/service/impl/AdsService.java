@@ -3,9 +3,9 @@ package ru.skypro.homework.service.impl;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
+import ru.skypro.homework.exception.AdImageException;
 import ru.skypro.homework.mapper.AdMapper;
 import ru.skypro.homework.model.Ad;
-import ru.skypro.homework.repository.AdPictureRepository;
 import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.service.CustomUserDetailsManager;
 
@@ -18,42 +18,39 @@ public class AdsService {
     private final CustomUserDetailsManager userService;
 
     private final AdRepository adRepository;
-    private final AdPictureRepository adPictureRepository;
-    private final AdPictureService adPictureService;
     private final CommentService commentService;
 
-    public AdsService(CustomUserDetailsManager userService, AdRepository adRepository, AdPictureRepository adPictureRepository, AdPictureService adPictureService, CommentService commentService
-    ) {
+    public AdsService(CustomUserDetailsManager userService, AdRepository adRepository, CommentService commentService) {
         this.userService = userService;
         this.adRepository = adRepository;
-        this.adPictureRepository = adPictureRepository;
-        this.adPictureService = adPictureService;
         this.commentService = commentService;
-//        this.mappers = mappers;
     }
 
 
     public AdListDto getAllAds() {
         List<Ad> ads = adRepository.findAll();
-        return new AdListDto(ads.size(),ads.stream().map(AdMapper::toDto).collect(Collectors.toList()));
+        return new AdListDto(ads.size(), ads.stream().map(AdMapper::toDto).collect(Collectors.toList()));
     }
 
     public AdDto addAd(MultipartFile image, CreateOrUpdateAdDto ad) {
-        return null;
+        Ad newAd = new Ad();
+        newAd.setUser(userService.getCurrentUser());
+        newAd.setTitle(ad.getTitle());
+        newAd.setAdText(ad.getDescription());
+        newAd.setPrice(ad.getPrice());
+        Ad savedAd = adRepository.save(newAd);
+        String filename = updateAdImage(savedAd.getPk(), image);
+        return AdMapper.toDto(newAd);
     }
 
     public ExtendedAdDto getAdById(Integer id) {
-        return null;
+        return adRepository.findById(id).map(AdMapper::toExtendedAdDto).orElseThrow(() -> new AdImageException("Изображение не найдено"));
     }
 
     public AdListDto getUserAds() {
         Integer id = userService.getCurrentUser().getId();
         List<Ad> ads = adRepository.findByUserId(id);
-        return new AdListDto(ads.size(),ads.stream().map(AdMapper::toDto).collect(Collectors.toList()));
-    }
-
-    public UserApiDto updateUserImage(Integer id, CreateOrUpdateAdDto ad) {
-        return null;
+        return new AdListDto(ads.size(), ads.stream().map(AdMapper::toDto).collect(Collectors.toList()));
     }
 
     public String updateAd(Integer id, CreateOrUpdateAdDto ad) {
@@ -63,7 +60,10 @@ public class AdsService {
     public void removeAd(Integer id) {
     }
 
-    public String updateAdPicture(Integer id, MultipartFile image) {
+    public String updateAdImage(Integer id, MultipartFile image) {
         return "";
+    }
+    public byte[] getImageFromFs(String pathForEndpoint) {
+        return null;
     }
 }

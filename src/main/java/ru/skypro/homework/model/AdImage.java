@@ -3,8 +3,8 @@ package ru.skypro.homework.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="ad_picture")
-public class AdPicture {
+@Table(name= "ad_image")
+public class AdImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,9 +23,9 @@ public class AdPicture {
     @JoinColumn(name = "ad_id")
     private Ad ad;
 
-    public AdPicture() {}
+    public AdImage() {}
 
-    public AdPicture(Integer id) {
+    public AdImage(Integer id) {
         this.id = id;
     }
 

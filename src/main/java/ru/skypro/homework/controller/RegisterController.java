@@ -21,17 +21,17 @@ import java.io.IOException;
 public class RegisterController {
 
     private static final Logger log = LoggerFactory.getLogger(RegisterController.class);
-    private final CustomUserDetailsManager customUserDetailsManager;
+    private final CustomUserDetailsManager userService;
 
-    public RegisterController(CustomUserDetailsManager customUserDetailsManager) {
-        this.customUserDetailsManager = customUserDetailsManager;
+    public RegisterController(CustomUserDetailsManager userService) {
+        this.userService = userService;
     }
 
     @PostMapping("/register")
     @Operation(summary = "Регистрация пользователя")
     public ResponseEntity<?> register(@RequestBody RegisterDto registerDto) throws IOException {
-        if (!customUserDetailsManager.userExists(registerDto.getUsername())) {
-            customUserDetailsManager.createUser(registerDto);
+        if (!userService.userExists(registerDto.getUsername())) {
+            userService.createUser(registerDto);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
