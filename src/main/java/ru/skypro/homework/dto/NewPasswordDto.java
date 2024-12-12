@@ -1,7 +1,6 @@
 package ru.skypro.homework.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import ru.skypro.homework.service.impl.СheckServiceImpl;
 
 import java.util.Objects;
 
@@ -45,11 +44,7 @@ public class NewPasswordDto {
     }
 
     public void setCurrentPassword(String currentPassword) {
-        if (СheckServiceImpl.checkLength(currentPassword, 8, 16)) {
-            this.currentPassword = currentPassword;
-        } else {
-            throw new IllegalArgumentException("Длина пароля от 8 до 16 символов");
-        }
+        this.currentPassword = currentPassword;
     }
 
     public String getNewPassword() {
@@ -57,11 +52,7 @@ public class NewPasswordDto {
     }
 
     public void setNewPassword(String newPassword) {
-        if (СheckServiceImpl.checkLength(newPassword, 8, 16)) {
-            this.newPassword = newPassword;
-        } else {
-            throw new IllegalArgumentException("Длина пароля от 8 до 16 символов");
-        }
+        this.newPassword = newPassword;
     }
 
     public NewPasswordDto() {

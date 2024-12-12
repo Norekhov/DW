@@ -1,7 +1,6 @@
 package ru.skypro.homework.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import ru.skypro.homework.service.impl.СheckServiceImpl;
 
 import java.util.Objects;
 
@@ -35,7 +34,6 @@ public class CreateOrUpdateAdDto {
                 '}';
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -54,11 +52,7 @@ public class CreateOrUpdateAdDto {
     }
 
     public void setTitle(String title) {
-        if (СheckServiceImpl.checkLength(title, 4, 32)) {
-            this.title = title;
-        } else {
-            throw new IllegalArgumentException("Длина заголовка от 4 до 32 символов");
-        }
+        this.title = title;
     }
 
     public Integer getPrice() {
@@ -66,11 +60,7 @@ public class CreateOrUpdateAdDto {
     }
 
     public void setPrice(Integer price) {
-        if (СheckServiceImpl.checkPrice(price, 0, 10000000)) {
-            this.price = price;
-        } else {
-            throw new IllegalArgumentException("Цена в диапазоне от 0 до 10,000,000");
-        }
+        this.price = price;
     }
 
     public String getDescription() {
@@ -78,11 +68,7 @@ public class CreateOrUpdateAdDto {
     }
 
     public void setDescription(String description) {
-        if (СheckServiceImpl.checkLength(description, 8, 64)) {
-            this.description = description;
-        } else {
-            throw new IllegalArgumentException("Длина описания от 8 до 64 символов");
-        }
+        this.description = description;
     }
 
     public CreateOrUpdateAdDto() {

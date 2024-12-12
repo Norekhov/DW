@@ -1,27 +1,12 @@
 package ru.skypro.homework.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import ru.skypro.homework.service.impl.СheckServiceImpl;
+import lombok.Data;
 
 import java.util.Objects;
 
+@Data
 public class LoginDto {
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public LoginDto(String password, String username) {
-        this.password = password;
-        this.username = username;
-    }
-
-    public LoginDto() {
-    }
 
     @Schema(type = "string",
             description = "пароль",
@@ -56,19 +41,27 @@ public class LoginDto {
         return Objects.hash(password, username);
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public void setPassword(String password) {
-        if (СheckServiceImpl.checkLength(password, 8, 16)) {
-            this.password = password;
-        } else {
-            throw new IllegalArgumentException("Длина пароля от 8 до 16 символов");
-        }
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public void setUsername(String username) {
-        if (СheckServiceImpl.checkLength(username, 4, 32) && СheckServiceImpl.checkUsername(username)) {
-            this.username = username;
-        } else {
-            throw new IllegalArgumentException("Длина логина от 4 до 32 символов в формате \"yourmail@mail.ru\"");
-        }
+        this.username = username;
+    }
+
+    public LoginDto() {
+    }
+
+    public LoginDto(String password, String username) {
+        this.password = password;
+        this.username = username;
     }
 }
