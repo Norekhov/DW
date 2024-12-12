@@ -1,6 +1,6 @@
 package ru.skypro.homework.model;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
@@ -14,7 +14,7 @@ public class Comment {
     private String text;
 
     @Column(name = "createdat")
-    private long createdAt;
+    private Integer createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -68,11 +68,11 @@ public class Comment {
         this.text = text;
     }
 
-    public long getCreatedAt() {
+    public Integer getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(long createdAt) {
+    public void setCreatedAt(Integer createdAt) {
         this.createdAt = createdAt;
     }
 

@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import java.util.Objects;
 
-public class AdListDto {
+public class AdsDto {
 
     @Schema(type = "integer",
             format = "int32",
@@ -27,8 +27,8 @@ public class AdListDto {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AdListDto adListDto = (AdListDto) o;
-        return Objects.equals(count, adListDto.count) && Objects.equals(results, adListDto.results);
+        AdsDto adsDto = (AdsDto) o;
+        return Objects.equals(count, adsDto.count) && Objects.equals(results, adsDto.results);
     }
 
     @Override
@@ -52,10 +52,10 @@ public class AdListDto {
         this.results = results;
     }
 
-    public AdListDto() {
+    public AdsDto() {
     }
 
-    public AdListDto(Integer count, List<AdDto> results) {
+    public AdsDto(Integer count, List<AdDto> results) {
         this.count = count;
         this.results = results;
     }

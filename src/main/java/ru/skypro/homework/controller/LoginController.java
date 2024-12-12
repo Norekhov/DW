@@ -2,8 +2,7 @@ package ru.skypro.homework.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -11,27 +10,27 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.skypro.homework.dto.LoginDto;
-import ru.skypro.homework.service.impl.LoginServiceImpl;
+import ru.skypro.homework.service.AuthService;
 
+@Slf4j
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
 @Tag(name = "Авторизация")
 public class LoginController {
-    private static final Logger log = LoggerFactory.getLogger(LoginController.class);
 
-    private final LoginServiceImpl authenticationProvider;
+    private final AuthService authService;
 
-    public LoginController(LoginServiceImpl authenticationProvider) {
-        this.authenticationProvider = authenticationProvider;
+    public LoginController(AuthService authService) {
+        this.authService = authService;
     }
-
 
     @PostMapping("/login")
     @Operation(summary = "Авторизация пользователя")
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
-        if (authenticationProvider.login(loginDto)) {
+        if (authService.login(loginDto.getUsername(), loginDto.getPassword())) {
             return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }
