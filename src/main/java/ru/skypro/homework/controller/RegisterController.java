@@ -31,10 +31,12 @@ public class RegisterController {
     @Operation(summary = "Регистрация пользователя")
     public ResponseEntity<?> register(@RequestBody RegisterDto registerDto) throws IOException {
         if (!userService.userExists(registerDto.getUsername())) {
-            userService.createUser(registerDto);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-        } else {
+            log.info("Попытка зарегистрировать пользователя с неуникальным логином {}", registerDto.getUsername());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+        log.info("Зарегистрирован новый пользователь {}", registerDto.getUsername());
+        userService.createUser(registerDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+
     }
 }

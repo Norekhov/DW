@@ -26,6 +26,7 @@ public class AdMapper {
         ad.setTitle(adDto.getTitle());
         ad.setPrice(adDto.getPrice());
         ad.setUser(user);
+        ad.setImage(adDto.getImage());
         return ad;
     }
 

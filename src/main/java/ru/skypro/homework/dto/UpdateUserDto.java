@@ -1,7 +1,7 @@
 package ru.skypro.homework.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import ru.skypro.homework.service.impl.СheckServiceImpl;
+import ru.skypro.homework.service.impl.CheckService;
 
 import java.util.Objects;
 
@@ -50,7 +50,7 @@ public class UpdateUserDto {
     }
 
     public void setFirstName(String firstName) {
-        if (СheckServiceImpl.checkLength(firstName, 3, 10) && СheckServiceImpl.checkSymbol(firstName)) {
+        if (CheckService.checkLength(firstName, 3, 10) && CheckService.checkSymbol(firstName)) {
             this.firstName = firstName;
         } else {
             throw new IllegalArgumentException("Длина имени от 3 до 10 символов");
@@ -62,7 +62,7 @@ public class UpdateUserDto {
     }
 
     public void setLastName(String lastName) {
-        if (СheckServiceImpl.checkLength(lastName, 3, 10) && СheckServiceImpl.checkSymbol(lastName)) {
+        if (CheckService.checkLength(lastName, 3, 10) && CheckService.checkSymbol(lastName)) {
             this.lastName = lastName;
         } else {
             throw new IllegalArgumentException("Длина фамилии от 3 до 10 символов");
@@ -74,7 +74,7 @@ public class UpdateUserDto {
     }
 
     public void setPhone(String phone) {
-        if (СheckServiceImpl.checkPhone(phone)) {
+        if (CheckService.checkPhone(phone)) {
             this.phone = phone;
         } else {
             throw new IllegalArgumentException("Формат номера телефона +7(000)000-00-00");

@@ -18,20 +18,20 @@ import ru.skypro.homework.service.impl.LoginServiceImpl;
 @Tag(name = "Авторизация")
 public class LoginController {
     private static final Logger log = LoggerFactory.getLogger(LoginController.class);
-
     private final LoginServiceImpl authenticationProvider;
 
     public LoginController(LoginServiceImpl authenticationProvider) {
         this.authenticationProvider = authenticationProvider;
     }
 
-
     @PostMapping("/login")
     @Operation(summary = "Авторизация пользователя")
-    public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
-        if (authenticationProvider.login(loginDto)) {
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    public void login(@RequestBody LoginDto loginDto) {
+//        if (
+                authenticationProvider.login(loginDto);
+//        ) {
+//            return ResponseEntity.ok().build();
+//        }
+//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }

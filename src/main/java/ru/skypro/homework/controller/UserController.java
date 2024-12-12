@@ -6,9 +6,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.dto.*;
-import ru.skypro.homework.service.CustomUserDetailsManager;
+import ru.skypro.homework.dto.NewPasswordDto;
+import ru.skypro.homework.dto.UpdateUserDto;
+import ru.skypro.homework.dto.UserApiDto;
 import ru.skypro.homework.mapper.UserMapper;
+import ru.skypro.homework.service.CustomUserDetailsManager;
 
 import java.io.IOException;
 
@@ -27,26 +29,28 @@ public class UserController {
 
     @PostMapping("/set_password")
     @Operation(summary = "Обновление пароля")
-    public void  setPassword(@RequestBody NewPasswordDto newPasswordDto) {
+    public void setPassword(@RequestBody NewPasswordDto newPasswordDto) {
+        log.info("Пользователь обновил пароль {}", userService.getCurrentUser().getUsername());
         userService.changePassword(newPasswordDto);
     }
 
     @GetMapping("/me")
     @Operation(summary = "Получение информации об авторизованном пользователе")
     public UserApiDto getUser() {
-        log.atWarn().log("UserController.getMe ");
         return UserMapper.toApi(userService.getCurrentUser());
     }
 
     @PatchMapping("/me")
     @Operation(summary = "Обновление информации об авторизованном пользователе")
     public UpdateUserDto updateUser(@RequestBody UpdateUserDto updateUserDto) {
+        log.info("Обновление информации об авторизованном пользователе");
         return userService.updateUser(updateUserDto);
     }
 
     @PatchMapping("/me/image")
     @Operation(summary = "Обновление аватара авторизованного пользователя")
     public void updateUserAvatar(@RequestParam("image") MultipartFile image) throws IOException {
+        log.info("Обновление аватара авторизованного пользователя");
         userService.updateUserAvatar(image);
     }
 }

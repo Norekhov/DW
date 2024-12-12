@@ -2,7 +2,6 @@ package ru.skypro.homework.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import ru.skypro.homework.config.ApplicationConfig;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.RegisterDto;
 import ru.skypro.homework.dto.UpdateUserDto;
@@ -31,20 +31,15 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
 
     private static final Logger log = LoggerFactory.getLogger(CustomUserDetailsManagerImpl.class);
     private final UserRepository userRepository;
-    private final Path pathToAvatars;
-    public CustomUserDetailsManagerImpl(UserRepository userRepository,
-                             @Value("${application.avatars-dir-name}") String avatarsDirName) {
+
+    public CustomUserDetailsManagerImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.pathToAvatars = Path.of(avatarsDirName);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("------------loadUserByUsername------------loadUserByUsername------------loadUserByUsername------------loadUserByUsername------------loadUserByUsername------------loadUserByUsername------------loadUserByUsername------------loadUserByUsername------------loadUserByUsername------------loadUserByUsername------------loadUserByUsername------------loadUserByUsername");
-        UserDetails userDetails = UserMapper.toUserDetails(
-                userRepository.findByUsername(username)
-                        .orElseThrow(() -> new UsernameNotFoundException(username)));
-        System.out.println(userDetails.getUsername()+" "+userDetails.getPassword()+" "+userDetails.getAuthorities());
+        UserDetails userDetails = UserMapper.toUserDetails(userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username)));
+        System.out.println(userDetails.getUsername() + " " + userDetails.getPassword() + " " + userDetails.getAuthorities());
         return userDetails;
     }
 
@@ -73,6 +68,7 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
     public void updateUser(UserDetails user) {
         updateUser(UserMapper.toUser(user));
     }
+
     @Override
     public void updateUser(User user) {
         if (!userExists(user.getUsername())) {
@@ -83,7 +79,7 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
 
     @Override
     public void deleteUser(String username) {
-        Optional<User> user= userRepository.findByUsername(username);
+        Optional<User> user = userRepository.findByUsername(username);
         if (user.isEmpty()) {
             throw new UsernameNotFoundException(username);
         }
@@ -99,7 +95,7 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
     public void changePassword(String oldPassword, String newPassword) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10);
 
-        if(encoder.matches(oldPassword,getCurrentUser().getPassword())) {
+        if (encoder.matches(oldPassword, getCurrentUser().getPassword())) {
             User user = getCurrentUser();
             user.setPassword(encoder.encode(newPassword));
             userRepository.save(user);
@@ -109,85 +105,53 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
     @Override
     public UpdateUserDto updateUser(UpdateUserDto updateUserDto) {
         User user = getCurrentUser();
-        UserMapper.toUser(user, updateUserDto);
         userRepository.save(user);
         return updateUserDto;
     }
 
     @Override
     public User getCurrentUser() {
-        System.out.println("------------getCurrentUser------------getCurrentUser------------getCurrentUser------------getCurrentUser------------getCurrentUser------------getCurrentUser------------getCurrentUser------------getCurrentUser------------getCurrentUser------------getCurrentUser------------getCurrentUser------------getCurrentUser");
-        UserDetails userDetails=(UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = userRepository.findByUsername(userDetails.getUsername())
-                .orElseThrow(
-                () -> new UsernameNotFoundException(userDetails.getUsername()));
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException(userDetails.getUsername()));
         System.out.println(user);
-
         return user;
     }
-
-//    public void saveAvatarForUser(User user) throws IOException {
-//        String defaultUserAvatarPath = "defaultUserAvatar/java.png";
-//        Path pathDefaultAvatar = Paths.get(defaultUserAvatarPath);
-//        byte[] data = Files.readAllBytes(pathDefaultAvatar);
-//        String extension = getFileExtension(pathDefaultAvatar.getFileName().toString());
-//        Path avatarsPathNew = path.resolve(UUID.randomUUID() + "." + extension);
-//
-//        Path parentDir = avatarsPathNew.getParent();
-//        if (!Files.exists(parentDir))
-//            Files.createDirectories(parentDir);
-//
-//        Files.write(avatarsPathNew, data);
-//
-//        UserAvatar userAvatar = new UserAvatar();
-//        userAvatar.setFilePath(avatarsPathNew.toString());
-//        userAvatar.setPathForEndpoint("/avatar/" + user.getId());
-//        userAvatar.setMediaType("image/png");
-//        userAvatar.setUser(user);
-//
-//        userAvatarRepository.save(userAvatar);
-//    }
 
     @Override
     public void updateUserAvatar(MultipartFile image) throws IOException {
         User user = getCurrentUser();
-        if(user.getAvatar()!=null) {
-            log.atInfo().log("Найден аватар, удаляю");
+        if (user.getAvatar() != null) {
+            log.info("Найден аватар, удаляю");
             deleteExistingAvatar(user);
         }
         String extension = StringUtils.getFilenameExtension(image.getOriginalFilename());
         user.setAvatar(UUID.randomUUID() + "." + extension);
-        Path parentDir = pathToAvatars.getParent();
-        if (!Files.exists(parentDir))
-            Files.createDirectories(parentDir);
-
-        Files.write(pathToAvatars.resolve(user.getAvatar()), image.getBytes());
+        Path parentDir = Path.of(".", ApplicationConfig.getPathToAvatars());
+        if (!Files.exists(parentDir)) Files.createDirectories(parentDir);
+        Path path = parentDir.resolve(user.getAvatar());
+        Files.write(path, image.getBytes());
         userRepository.save(user);
     }
+
     @Override
     public void deleteExistingAvatar(User user) throws IOException {
-        Path path=pathToAvatars.resolve(user.getAvatar());
-        if (Files.exists(path)){
+        Path path = resolvePathToAvatar(user.getAvatar());
+        if (Files.exists(path)) {
             Files.delete(path);
         }
     }
+
     @Override
     public byte[] getAvatarFromFs(String avatarId) throws IOException {
-        Path path=pathToAvatars.resolve(avatarId);
-        if (!Files.exists(path)){
-            log.atInfo().log("Аватара нету");
+        Path path = resolvePathToAvatar(avatarId);
+        if (!Files.exists(path)) {
+            log.info("Аватара нету");
             throw new FileNotFoundException(avatarId);
         }
         return Files.readAllBytes(path);
     }
 
-//    private String getFileExtension(String fileName) {
-//        int dotIndex = fileName.lastIndexOf('.');
-//
-//        if (dotIndex == -1 || dotIndex == fileName.length() - 1) {
-//            return "";
-//        }
-//
-//        return fileName.substring(dotIndex + 1);
-//    }
+    private Path resolvePathToAvatar(String avatarId) {
+        return Path.of(".", ApplicationConfig.getPathToAvatars()).resolve(avatarId);
+    }
 }

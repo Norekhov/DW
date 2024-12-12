@@ -21,6 +21,8 @@ public class Ad {
     @JoinColumn(name = "user_id")
     private User user;
 
+    private String image;
+
     @Override
     public String toString() {
         return "Ad{" +
@@ -88,11 +90,20 @@ public class Ad {
     public Ad() {
     }
 
-    public Ad(Integer pk, Integer price, String title, String adText, User user) {
+    public Ad(Integer pk, Integer price, String title, String adText, User user, String image) {
         this.pk = pk;
         this.price = price;
         this.title = title;
         this.adText = adText;
         this.user = user;
+        this.image = image;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

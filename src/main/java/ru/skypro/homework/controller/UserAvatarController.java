@@ -4,8 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.util.Pair;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,20 +23,10 @@ public class UserAvatarController {
         this.userService = userService;
     }
 
-    @GetMapping(value = "/{id}",produces = {MediaType.IMAGE_JPEG_VALUE,
-            MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_PNG_VALUE})
+    @GetMapping(value = "/{avatarId}", produces = {MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_PNG_VALUE})
     @Operation(summary = "Загрузка аватара пользователя")
-    public ResponseEntity<byte[]> getAvatarFromFs(@PathVariable("id") String avatarId) throws IOException {
-        log.atWarn().log("UserAvatarController.getAvatarFromFs " + avatarId);
+    public ResponseEntity<byte[]> getAvatarFromFs(@PathVariable("avatarId") String avatarId) throws IOException {
+        log.info("Загрузка аватара пользователя {}", avatarId);
         return ResponseEntity.ok().body(userService.getAvatarFromFs(avatarId));
     }
-//
-//    private ResponseEntity<byte[]> getEntityImage(Pair<byte[], String> avatarData ) {
-//        byte[] data = avatarData.getFirst();
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .contentLength(data.length)
-//                .contentType(MediaType.parseMediaType(avatarData.getSecond()))
-//                .body(data);
-//    }
 }

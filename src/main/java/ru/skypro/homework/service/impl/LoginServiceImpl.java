@@ -1,7 +1,6 @@
 package ru.skypro.homework.service.impl;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.LoginDto;
 import ru.skypro.homework.service.CustomUserDetailsManager;
@@ -23,7 +22,6 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public boolean login(String username, String password) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10);
-
         return encoder.matches(password, userManager.loadUserByUsername(username).getPassword());
     }
 }

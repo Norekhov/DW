@@ -1,7 +1,7 @@
 package ru.skypro.homework.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import ru.skypro.homework.service.impl.СheckServiceImpl;
+import ru.skypro.homework.service.impl.CheckService;
 
 import java.util.Objects;
 
@@ -39,7 +39,7 @@ public class CreateOrUpdateCommentDto {
     }
 
     public void setText(String text) {
-        if (СheckServiceImpl.checkLength(text, 8, 64)) {
+        if (CheckService.checkLength(text, 8, 64)) {
             this.text = text;
         } else {
             throw new IllegalArgumentException("Длина комментария от 8 до 64 символов");
@@ -50,7 +50,7 @@ public class CreateOrUpdateCommentDto {
     }
 
     public CreateOrUpdateCommentDto(String text) {
-        if (СheckServiceImpl.checkLength(text, 8, 64)) {
+        if (CheckService.checkLength(text, 8, 64)) {
             this.text = text;
         } else {
             throw new IllegalArgumentException("Длина комментария от 8 до 64 символов");
