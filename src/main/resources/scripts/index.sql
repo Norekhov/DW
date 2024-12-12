@@ -22,7 +22,7 @@ CREATE TABLE comment
 (
     pk        INT  NOT NULL PRIMARY KEY,
     text      TEXT NOT NULL,
-    createdAt INT  NOT NULL,
+    createdAt BIGINT  NOT NULL,
     user_id   INT REFERENCES user (id),
     ad_id     INT REFERENCES ad (pk)
 );

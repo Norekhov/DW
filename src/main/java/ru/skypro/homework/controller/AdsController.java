@@ -2,33 +2,46 @@ package ru.skypro.homework.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.AdDto;
-import ru.skypro.homework.dto.AdsDto;
+import ru.skypro.homework.dto.AdListDto;
 import ru.skypro.homework.dto.CreateOrUpdateAdDto;
 import ru.skypro.homework.dto.ExtendedAdDto;
-import ru.skypro.homework.service.AdsService;
+import ru.skypro.homework.service.impl.AdPictureService;
+import ru.skypro.homework.service.impl.AdsService;
 
+import java.io.IOException;
+
+@CrossOrigin(value = "http://localhost:3000")
 @RestController
 @RequestMapping("/ads")
 @Tag(name = "Объявления")
 public class AdsController {
+    private static final Logger log = LoggerFactory.getLogger(AdsController.class);
 
-    @Autowired
-    private AdsService adsService;
+    private final AdPictureService adPictureService;
+    private final AdsService adsService;
+
+    public AdsController(AdPictureService adPictureService,
+                         AdsService adsService) {
+        this.adPictureService = adPictureService;
+        this.adsService = adsService;
+    }
 
     @GetMapping
     @Operation(summary = "Получение всех объявлений")
-    public AdsDto getAllAds() {
+    public AdListDto getAllAds() {
         return adsService.getAllAds();
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Добавление объявления")
     public AdDto addAd(@RequestParam("image") MultipartFile image,
-                       @RequestBody CreateOrUpdateAdDto ad) {
+                       @RequestPart("properties") CreateOrUpdateAdDto ad) {
         return adsService.addAd(image, ad);
     }
 
@@ -42,28 +55,26 @@ public class AdsController {
     @Operation(summary = "Обновление информации об объявлении")
     public String updateAd(@PathVariable Integer id,
                            @RequestBody CreateOrUpdateAdDto ad) {
-        adsService.updateAd(id, ad);
-        return "Объявление успешно обновлено";
+        return adsService.updateAd(id, ad);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Удаление объявления")
-    public String removeAd(@PathVariable Integer id) {
+    public void removeAd(@PathVariable Integer id) {
         adsService.removeAd(id);
-        return "Объявление успешно удалено";
     }
 
     @GetMapping("/me")
     @Operation(summary = "Получение объявлений авторизованного пользователя")
-    public AdsDto getUserAds() {
+    public AdListDto getUserAds() {
         return adsService.getUserAds();
     }
 
     @PatchMapping("/{id}/image")
     @Operation(summary = "Обновление картинки объявления")
-    public String updateUserImage(@PathVariable Integer id,
-                                  @RequestBody CreateOrUpdateAdDto ad) {
-        return null;
+    public String updateAdPicture(@PathVariable Integer id,
+                                  @RequestParam("image") MultipartFile image) throws IOException {
+        return adsService.updateAdPicture(id, image);
     }
 
 

@@ -2,18 +2,16 @@ package ru.skypro.homework.mapper;
 
 import org.springframework.stereotype.Component;
 import ru.skypro.homework.dto.AdDto;
+import ru.skypro.homework.dto.AdListDto;
 import ru.skypro.homework.model.Ad;
+import ru.skypro.homework.model.User;
 import ru.skypro.homework.repository.UserRepository;
+
+import java.util.List;
 
 @Component
 public class AdMapper {
-    private final UserRepository userRepository;
-
-    public AdMapper(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-    public AdDto toDto(Ad ad) {
+    public static AdDto toDto(Ad ad) {
         AdDto adDto = new AdDto();
         adDto.setPk(ad.getPk());
         adDto.setTitle(ad.getTitle());
@@ -21,12 +19,12 @@ public class AdMapper {
         adDto.setAuthor(ad.getUser().getId());
         return adDto;
     }
-    public Ad toAd(AdDto adDto) {
+    public static Ad toAd(AdDto adDto, User user) {
         Ad ad = new Ad();
         ad.setPk(adDto.getPk());
         ad.setTitle(adDto.getTitle());
         ad.setPrice(adDto.getPrice());
-        ad.setUser(userRepository.findById(adDto.getAuthor()).orElseThrow());
+        ad.setUser(user);
         return ad;
     }
 }

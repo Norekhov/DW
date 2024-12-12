@@ -1,6 +1,6 @@
 package ru.skypro.homework.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name="ad_picture")
@@ -19,9 +19,6 @@ public class AdPicture {
     @Column(name = "mediatype")
     private String mediaType;
 
-    //    private byte[] data;
-
-    //только одна картинка на объявление... мда, сервис обречен :)
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ad_id")
     private Ad ad;
@@ -63,14 +60,6 @@ public class AdPicture {
     public void setMediaType(String mediaType) {
         this.mediaType = mediaType;
     }
-
-//    public byte[] getData() {
-//        return data;
-//    }
-
-//    public void setData(byte[] data) {
-//        this.data = data;
-//    }
 
     public Ad getAd() {
         return ad;
