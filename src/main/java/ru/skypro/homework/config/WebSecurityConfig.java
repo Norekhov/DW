@@ -20,13 +20,14 @@ import java.util.List;
 @EnableWebSecurity
 public class WebSecurityConfig {
 
-    private static final String[] AUTH_WHITELIST = {"/swagger-resources/**", "/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs", "/webjars/**", "/login", "/register"};
-//    private final CustomUserDetailsManager userDetailsService;
-
-
-//    public WebSecurityConfig(CustomUserDetailsManager userDetailsService) {
-//        this.userDetailsService = userDetailsService;
-//    }
+    private static final String[] AUTH_WHITELIST = {
+            "/swagger-resources/**",
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/v3/api-docs",
+            "/webjars/**",
+            "/login",
+            "/register"};
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -43,7 +44,15 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http.csrf(AbstractHttpConfigurer::disable).authorizeHttpRequests(request -> request.requestMatchers(AUTH_WHITELIST).permitAll().requestMatchers(HttpMethod.GET, "/ads").permitAll().anyRequest().authenticated()).cors(customizer -> customizer.configurationSource(corsConfigurationSource())).httpBasic(Customizer.withDefaults()).build();
+        return http.csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers(AUTH_WHITELIST).permitAll()
+                        .requestMatchers(HttpMethod.GET, "/ads").permitAll()
+                        .anyRequest().authenticated())
+                .cors(customizer -> customizer
+                        .configurationSource(corsConfigurationSource()))
+                .httpBasic(Customizer.withDefaults())
+                .build();
     }
 
     @Bean

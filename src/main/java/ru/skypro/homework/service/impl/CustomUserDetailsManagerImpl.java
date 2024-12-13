@@ -26,6 +26,9 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Сервис для работы с пользователями
+ */
 @Service
 public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
 
@@ -36,6 +39,13 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Загружает пользователя по ИД из БД
+     *
+     * @param username
+     * @return
+     * @throws UsernameNotFoundException
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserDetails userDetails = UserMapper.toUserDetails(userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username)));
@@ -43,11 +53,22 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
         return userDetails;
     }
 
+    /**
+     * Проверка логина на уникальность
+     *
+     * @param username
+     * @return
+     */
     @Override
     public boolean userExists(String username) {
         return userRepository.findByUsername(username).isPresent();
     }
 
+    /**
+     * Новый пользователь из регистрационного эндпоинта
+     *
+     * @param registerDto
+     */
     @Override
     public void createUser(RegisterDto registerDto) {
         if (userExists(registerDto.getUsername())) {
@@ -55,6 +76,7 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
         }
         userRepository.save(UserMapper.toUser(registerDto));
     }
+
 
     @Override
     public void createUser(UserDetails user) {
@@ -77,6 +99,15 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
         userRepository.save(user);
     }
 
+    @Override
+    public UpdateUserDto updateUser(UpdateUserDto updateUserDto) {
+        User user = getCurrentUser();
+        user.setFirstName(updateUserDto.getFirstName());
+        user.setLastName(updateUserDto.getLastName());
+        user.setPhone(updateUserDto.getPhone());
+        userRepository.save(user);
+        return updateUserDto;
+    }
     @Override
     public void deleteUser(String username) {
         Optional<User> user = userRepository.findByUsername(username);
@@ -102,12 +133,6 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
         }
     }
 
-    @Override
-    public UpdateUserDto updateUser(UpdateUserDto updateUserDto) {
-        User user = getCurrentUser();
-        userRepository.save(user);
-        return updateUserDto;
-    }
 
     @Override
     public User getCurrentUser() {

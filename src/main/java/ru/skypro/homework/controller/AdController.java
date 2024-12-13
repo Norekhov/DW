@@ -13,64 +13,77 @@ import ru.skypro.homework.dto.AdDto;
 import ru.skypro.homework.dto.AdListDto;
 import ru.skypro.homework.dto.CreateOrUpdateAdDto;
 import ru.skypro.homework.dto.ExtendedAdDto;
-import ru.skypro.homework.service.impl.AdsService;
+import ru.skypro.homework.exception.EntityNotFoundException;
+import ru.skypro.homework.service.AdService;
+
+import java.io.IOException;
 
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
 @RequestMapping("/ads")
 @Tag(name = "Объявления")
-public class AdsController {
-    private static final Logger log = LoggerFactory.getLogger(AdsController.class);
-    private final AdsService adsService;
+public class AdController {
+    private static final Logger log = LoggerFactory.getLogger(AdController.class);
+    private final AdService adService;
 
-    public AdsController(AdsService adsService) {
-        this.adsService = adsService;
+    public AdController(AdService adService) {
+        this.adService = adService;
     }
 
     @GetMapping
     @Operation(summary = "Получение всех объявлений")
     public AdListDto getAllAds() {
-        return adsService.getAllAds();
+        log.info("Получение всех объявлений");
+        return adService.getAllAds();
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Добавление объявления")
     public ResponseEntity<AdDto> addAd(@RequestParam("image") MultipartFile image, @RequestPart("properties") CreateOrUpdateAdDto ad) {
         log.info("Добавление объявления {}", ad.getTitle());
-        return ResponseEntity.status(HttpStatus.CREATED).body(adsService.addAd(image, ad));
+        return ResponseEntity.status(HttpStatus.CREATED).body(adService.addAd(image, ad));
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Получение информации об объявлении")
     public ExtendedAdDto getAdById(@PathVariable Integer id) {
-        return adsService.getAdById(id);
+        return adService.getAdById(id);
     }
 
     @PatchMapping("/{id}")
     @Operation(summary = "Обновление информации об объявлении")
-    public String updateAd(@PathVariable Integer id, @RequestBody CreateOrUpdateAdDto ad) {
+    public AdDto updateAd(@PathVariable Integer id, @RequestBody CreateOrUpdateAdDto ad) {
         log.info("Обновление информации об объявлении {}", ad.getTitle());
-        return adsService.updateAd(id, ad);
+        return adService.updateAd(id, ad);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Удаление объявления")
     public ResponseEntity<?> removeAd(@PathVariable Integer id) {
         log.info("Удаление объявления {}", id);
-        HttpStatus httpStatus = adsService.removeAd(id);
+        HttpStatus httpStatus = HttpStatus.OK;
+        try {
+            adService.removeAd(id);
+        } catch (EntityNotFoundException e) {
+            httpStatus = HttpStatus.NOT_FOUND;
+        } catch (Exception e) {
+            httpStatus = HttpStatus.FORBIDDEN;
+        }
         return ResponseEntity.status(httpStatus).body(httpStatus.getReasonPhrase());
     }
 
     @GetMapping("/me")
     @Operation(summary = "Получение объявлений авторизованного пользователя")
     public AdListDto getUserAds() {
-        return adsService.getUserAds();
+        return adService.getUserAds();
     }
 
-    @PatchMapping("/{id}/image")
+    @PatchMapping(path = "/{adId}/image",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @Operation(summary = "Обновление изображения объявления")
-    public String updateAdImage(@PathVariable Integer id, @RequestParam("image") MultipartFile image) {
-        log.info("Обновление изображения объявления {}", id);
-        return adsService.updateAdImage(id, image);
+    public ResponseEntity<byte[]> updateAdImage(@PathVariable Integer adId, @RequestParam("image") MultipartFile image) throws IOException {
+        log.info("Обновление изображения объявления {}", adId);
+        return ResponseEntity.ok().body(adService.updateAdImage(adId, image));
     }
 }

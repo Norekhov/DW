@@ -16,15 +16,6 @@ public class CommentMapper {
         return commentDto;
     }
 
-    public static Comment toComment(CommentDto commentDto, User user, Ad ad) {
-        Comment comment = new Comment();
-        comment.setPk(commentDto.getPk());
-        comment.setText(commentDto.getText());
-        comment.setAd(ad);
-        comment.setCreatedAt(commentDto.getCreatedAt());
-        comment.setUser(user);
-        return comment;
-    }
     public static Comment toComment(CreateOrUpdateCommentDto createOrUpdateCommentDto, User user, Long time, Ad ad) {
         Comment comment = new Comment();
         comment.setPk(null);

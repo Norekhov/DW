@@ -1,9 +1,8 @@
 package ru.skypro.homework.model;
 
+import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 import ru.skypro.homework.dto.Role;
-
-import jakarta.persistence.*;
 
 import java.util.Objects;
 

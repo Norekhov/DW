@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.skypro.homework.dto.RegisterDto;
 import ru.skypro.homework.service.CustomUserDetailsManager;
 
-import java.io.IOException;
-
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
 @Tag(name = "Регистрация")
@@ -29,7 +27,7 @@ public class RegisterController {
 
     @PostMapping("/register")
     @Operation(summary = "Регистрация пользователя")
-    public ResponseEntity<?> register(@RequestBody RegisterDto registerDto) throws IOException {
+    public ResponseEntity<?> register(@RequestBody RegisterDto registerDto) {
         if (!userService.userExists(registerDto.getUsername())) {
             log.info("Попытка зарегистрировать пользователя с неуникальным логином {}", registerDto.getUsername());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

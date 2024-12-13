@@ -2,7 +2,10 @@ package ru.skypro.homework.mapper;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import ru.skypro.homework.config.ApplicationConfig;
-import ru.skypro.homework.dto.*;
+import ru.skypro.homework.dto.RegisterDto;
+import ru.skypro.homework.dto.Role;
+import ru.skypro.homework.dto.UserApiDto;
+import ru.skypro.homework.dto.UserAuthenticationDto;
 import ru.skypro.homework.model.User;
 
 public class UserMapper {

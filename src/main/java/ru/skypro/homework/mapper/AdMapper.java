@@ -2,13 +2,8 @@ package ru.skypro.homework.mapper;
 
 import org.springframework.stereotype.Component;
 import ru.skypro.homework.dto.AdDto;
-import ru.skypro.homework.dto.AdListDto;
 import ru.skypro.homework.dto.ExtendedAdDto;
 import ru.skypro.homework.model.Ad;
-import ru.skypro.homework.model.User;
-import ru.skypro.homework.repository.UserRepository;
-
-import java.util.List;
 
 @Component
 public class AdMapper {
@@ -18,16 +13,8 @@ public class AdMapper {
         adDto.setTitle(ad.getTitle());
         adDto.setPrice(ad.getPrice());
         adDto.setAuthor(ad.getUser().getId());
+        adDto.setImage(ad.getImageFilename());
         return adDto;
-    }
-    public static Ad toAd(AdDto adDto, User user) {
-        Ad ad = new Ad();
-        ad.setPk(adDto.getPk());
-        ad.setTitle(adDto.getTitle());
-        ad.setPrice(adDto.getPrice());
-        ad.setUser(user);
-        ad.setImage(adDto.getImage());
-        return ad;
     }
 
     public static ExtendedAdDto toExtendedAdDto(Ad from) {
@@ -40,7 +27,7 @@ public class AdMapper {
         to.setAuthorLastName(from.getUser().getLastName());
         to.setEmail(from.getUser().getUsername());
         to.setPhone(from.getUser().getPhone());
+        to.setImage(from.getImageFilename());
         return to;
-
     }
 }

@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class CreateOrUpdateCommentDto {
 
-    @Schema(required = true,
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED,
             type = "string",
             description = "текст комментария",
             minLength = 8,
@@ -43,7 +43,7 @@ public class CreateOrUpdateCommentDto {
             this.text = text;
         } else {
             throw new IllegalArgumentException("Длина комментария от 8 до 64 символов");
-        };
+        }
     }
 
     public CreateOrUpdateCommentDto() {
@@ -54,6 +54,6 @@ public class CreateOrUpdateCommentDto {
             this.text = text;
         } else {
             throw new IllegalArgumentException("Длина комментария от 8 до 64 символов");
-        };
+        }
     }
 }
