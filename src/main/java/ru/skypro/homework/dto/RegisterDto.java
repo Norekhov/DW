@@ -1,11 +1,10 @@
 package ru.skypro.homework.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
+import ru.skypro.homework.service.impl.СheckServiceImpl;
 
 import java.util.Objects;
 
-@Data
 public class RegisterDto {
 
     @Schema(type = "string",
@@ -40,7 +39,7 @@ public class RegisterDto {
     @Schema(type = "string",
             description = "роль пользователя",
             allowableValues = {"USER", "ADMIN"})
-    private RoleDto roleDto;
+    private Role role;
 
     @Override
     public String toString() {
@@ -50,7 +49,7 @@ public class RegisterDto {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", phone='" + phone + '\'' +
-                ", role=" + roleDto +
+                ", role=" + role +
                 '}';
     }
 
@@ -59,12 +58,12 @@ public class RegisterDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         RegisterDto registerDto = (RegisterDto) o;
-        return Objects.equals(username, registerDto.username) && Objects.equals(password, registerDto.password) && Objects.equals(firstName, registerDto.firstName) && Objects.equals(lastName, registerDto.lastName) && Objects.equals(phone, registerDto.phone) && roleDto == registerDto.roleDto;
+        return Objects.equals(username, registerDto.username) && Objects.equals(password, registerDto.password) && Objects.equals(firstName, registerDto.firstName) && Objects.equals(lastName, registerDto.lastName) && Objects.equals(phone, registerDto.phone) && role == registerDto.role;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(username, password, firstName, lastName, phone, roleDto);
+        return Objects.hash(username, password, firstName, lastName, phone, role);
     }
 
     public String getUsername() {
@@ -72,7 +71,11 @@ public class RegisterDto {
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        if (СheckServiceImpl.checkLength(username, 4, 32) && СheckServiceImpl.checkUsername(username)) {
+            this.username = username;
+        } else {
+            throw new IllegalArgumentException("Длина логина от 4 до 32 символов в формате \"yourmail@mail.ru\"");
+        }
     }
 
     public String getPassword() {
@@ -80,7 +83,11 @@ public class RegisterDto {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        if (СheckServiceImpl.checkLength(password, 8, 16)) {
+            this.password = password;
+        } else {
+            throw new IllegalArgumentException("Длина пароля от 8 до 16 символов");
+        }
     }
 
     public String getFirstName() {
@@ -88,7 +95,11 @@ public class RegisterDto {
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        if (СheckServiceImpl.checkLength(firstName, 2, 16) && СheckServiceImpl.checkSymbol(firstName)) {
+            this.firstName = firstName;
+        } else {
+            throw new IllegalArgumentException("Длина имени от 2 до 16 символов");
+        }
     }
 
     public String getLastName() {
@@ -96,7 +107,11 @@ public class RegisterDto {
     }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+        if (СheckServiceImpl.checkLength(lastName, 2, 16) && СheckServiceImpl.checkSymbol(lastName)) {
+            this.lastName = lastName;
+        } else {
+            throw new IllegalArgumentException("Длина фамилии от 2 до 16 символов");
+        }
     }
 
     public String getPhone() {
@@ -104,26 +119,30 @@ public class RegisterDto {
     }
 
     public void setPhone(String phone) {
-        this.phone = phone;
+        if (СheckServiceImpl.checkPhone(phone)) {
+            this.phone = phone;
+        } else {
+            throw new IllegalArgumentException("Формат номера телефона +7(000)000-00-00");
+        }
     }
 
-    public RoleDto getRole() {
-        return roleDto;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRole(RoleDto roleDto) {
-        this.roleDto = roleDto;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public RegisterDto() {
     }
 
-    public RegisterDto(String username, String password, String firstName, String lastName, String phone, RoleDto roleDto) {
+    public RegisterDto(String username, String password, String firstName, String lastName, String phone, Role role) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
-        this.roleDto = roleDto;
+        this.role = role;
     }
 }
