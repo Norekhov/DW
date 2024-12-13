@@ -1,26 +1,15 @@
 package ru.skypro.homework.service;
 
-import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.CommentDto;
 import ru.skypro.homework.dto.CommentsDto;
 import ru.skypro.homework.dto.CreateOrUpdateCommentDto;
 
-@Service
-public class CommentService {
+public interface CommentService {
+    CommentsDto getCommentsForAd(Integer adId);
 
-    public CommentsDto getCommentsForAd(Integer id) {
-        return null;
-    }
+    CommentDto addComment(Integer adId, CreateOrUpdateCommentDto createCommentDto);
 
-    public CommentDto addComment(Integer adId, CreateOrUpdateCommentDto comment) {
-        return null;
-    }
+    CommentDto updateComment(Integer adId, Integer commentId, CreateOrUpdateCommentDto createOrUpdateCommentDto);
 
-    public CommentDto updateComment(Integer adId, Integer commentId, CreateOrUpdateCommentDto comment) {
-        return null;
-    }
-
-    public String deleteComment(Integer adId, Integer commentId) {
-        return null;
-    }
+    Boolean deleteComment(Integer commentId);
 }

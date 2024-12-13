@@ -1,17 +1,13 @@
 package ru.skypro.homework.mapper;
 
 import ru.skypro.homework.dto.CommentDto;
+import ru.skypro.homework.dto.CreateOrUpdateCommentDto;
+import ru.skypro.homework.model.Ad;
 import ru.skypro.homework.model.Comment;
-import ru.skypro.homework.repository.CommentRepository;
+import ru.skypro.homework.model.User;
 
 public class CommentMapper {
-    private final CommentRepository commentRepository;
-
-    public CommentMapper(CommentRepository commentRepository) {
-        this.commentRepository = commentRepository;
-    }
-
-    public CommentDto toDto(Comment comment) {
+    public static CommentDto toDto(Comment comment) {
         CommentDto commentDto = new CommentDto();
         commentDto.setPk(comment.getPk());
         commentDto.setText(comment.getText());
@@ -19,12 +15,14 @@ public class CommentMapper {
         commentDto.setCreatedAt(comment.getCreatedAt());
         return commentDto;
     }
-    public Comment toComment(CommentDto commentDto) {
+
+    public static Comment toComment(CreateOrUpdateCommentDto createOrUpdateCommentDto, User user, Long time, Ad ad) {
         Comment comment = new Comment();
-        comment.setPk(commentDto.getPk());
-        comment.setText(commentDto.getText());
-        comment.setCreatedAt(commentDto.getCreatedAt());
-        comment.setUser(commentRepository.findById(commentDto.getAuthor()).orElseThrow().getUser());
+        comment.setPk(null);
+        comment.setText(createOrUpdateCommentDto.getText());
+        comment.setAd(ad);
+        comment.setCreatedAt(time);
+        comment.setUser(user);
         return comment;
     }
 }

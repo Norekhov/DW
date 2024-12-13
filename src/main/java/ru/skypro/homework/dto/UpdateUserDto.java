@@ -5,30 +5,27 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Objects;
 
 public class UpdateUserDto {
-    @Schema(type = "string",
-            description = "имя пользователя",
-            minLength = 3,
-            maxLength = 10)
+    @Schema(type = "string", description = "имя пользователя", minLength = 3, maxLength = 10)
     private String firstName;
 
-    @Schema(type = "string",
-            description = "фамилия пользователя",
-            minLength = 3,
-            maxLength = 10)
+    @Schema(type = "string", description = "фамилия пользователя", minLength = 3, maxLength = 10)
     private String lastName;
 
-    @Schema(type = "string",
-            description = "телефон пользователя",
-            pattern = "\\+7\\s?\\(?\\d{3}\\)?\\s?\\d{3}-?\\d{2}-?\\d{2}")
+    @Schema(type = "string", description = "телефон пользователя", pattern = "\\+7\\s?\\(?\\d{3}\\)?\\s?\\d{3}-?\\d{2}-?\\d{2}")
     private String phone;
+
+    public UpdateUserDto() {
+    }
+
+    public UpdateUserDto(String firstName, String lastName, String phone) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+    }
 
     @Override
     public String toString() {
-        return "UpdateUser{" +
-                "firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", phone='" + phone + '\'' +
-                '}';
+        return "UpdateUser{" + "firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", phone='" + phone + '\'' + '}';
     }
 
     @Override
@@ -65,15 +62,6 @@ public class UpdateUserDto {
     }
 
     public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public UpdateUserDto() {
-    }
-
-    public UpdateUserDto(String firstName, String lastName, String phone) {
-        this.firstName = firstName;
-        this.lastName = lastName;
         this.phone = phone;
     }
 }

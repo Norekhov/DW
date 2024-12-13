@@ -2,42 +2,55 @@ package ru.skypro.homework.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.dto.*;
-import ru.skypro.homework.service.UserService;
+import ru.skypro.homework.dto.NewPasswordDto;
+import ru.skypro.homework.dto.UpdateUserDto;
+import ru.skypro.homework.dto.UserApiDto;
+import ru.skypro.homework.mapper.UserMapper;
+import ru.skypro.homework.service.CustomUserDetailsManager;
 
+import java.io.IOException;
 
+@CrossOrigin(value = "http://localhost:3000")
 @RestController
 @RequestMapping("/users")
 @Tag(name = "Пользователи")
 public class UserController {
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    @Autowired
-    private UserService userService;
+    private final CustomUserDetailsManager userService;
+
+    public UserController(CustomUserDetailsManager userService) {
+        this.userService = userService;
+    }
 
     @PostMapping("/set_password")
     @Operation(summary = "Обновление пароля")
-    public String setPassword(@RequestBody NewPasswordDto newPasswordDto) {
-        return userService.setPassword(newPasswordDto);
+    public void setPassword(@RequestBody NewPasswordDto newPasswordDto) {
+        log.info("Пользователь обновил пароль {}", userService.getCurrentUser().getUsername());
+        userService.changePassword(newPasswordDto);
     }
 
     @GetMapping("/me")
     @Operation(summary = "Получение информации об авторизованном пользователе")
-    public UserDto getUser() {
-        return userService.getUser();
+    public UserApiDto getUser() {
+        return UserMapper.toApi(userService.getCurrentUser());
     }
 
     @PatchMapping("/me")
     @Operation(summary = "Обновление информации об авторизованном пользователе")
-    public String updateUser(@RequestBody UpdateUserDto updateUserDto) {
+    public UpdateUserDto updateUser(@RequestBody UpdateUserDto updateUserDto) {
+        log.info("Обновление информации об авторизованном пользователе");
         return userService.updateUser(updateUserDto);
     }
 
     @PatchMapping("/me/image")
     @Operation(summary = "Обновление аватара авторизованного пользователя")
-    public String updateUserImage(@RequestParam("image") MultipartFile image) {
-        return userService.updateUserImage(image);
+    public void updateUserAvatar(@RequestParam("image") MultipartFile image) throws IOException {
+        log.info("Обновление аватара авторизованного пользователя");
+        userService.updateUserAvatar(image);
     }
 }

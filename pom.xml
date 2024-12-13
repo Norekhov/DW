@@ -7,24 +7,23 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.15</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <version>3.4.0</version>
+        <relativePath/>
     </parent>
 
     <groupId>ru.skypro</groupId>
     <artifactId>ads</artifactId>
     <version>0.0.1-SNAPSHOT
-    </version
-    >
+    </version>
     <name>Ads application</name>
     <description>Application for managing ads</description>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
     </properties>
 
+    <!--suppress VulnerableLibrariesLocal -->
     <dependencies>
-        <!--suppress VulnerableLibrariesLocal -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -37,12 +36,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-        <!--suppress VulnerableLibrariesLocal -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -54,9 +47,13 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
-          <version>1.7.0</version>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.6.0</version>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
@@ -73,14 +70,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
-                </configuration>
             </plugin>
         </plugins>
     </build>

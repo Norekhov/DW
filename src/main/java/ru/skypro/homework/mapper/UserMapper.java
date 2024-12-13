@@ -1,27 +1,38 @@
 package ru.skypro.homework.mapper;
 
-import ru.skypro.homework.dto.UserDto;
+import org.springframework.security.core.userdetails.UserDetails;
+import ru.skypro.homework.config.ApplicationConfig;
+import ru.skypro.homework.dto.RegisterDto;
+import ru.skypro.homework.dto.Role;
+import ru.skypro.homework.dto.UserApiDto;
+import ru.skypro.homework.dto.UserAuthenticationDto;
 import ru.skypro.homework.model.User;
 
 public class UserMapper {
-    public UserDto toDto(User user) {
-        UserDto userDto = new UserDto();
-        userDto.setId(user.getId());
-        userDto.setEmail(user.getEmail());
-        userDto.setFirstName(user.getFirstName());
-        userDto.setLastName(user.getLastName());
-        userDto.setPhone(user.getPhone());
-        userDto.setRole(user.getRoleDto());
-        return userDto;
+    public static UserApiDto toApi(User user) {
+        UserApiDto userApiDto = new UserApiDto();
+        userApiDto.setId(user.getId());
+        userApiDto.setEmail(user.getUsername());
+        userApiDto.setFirstName(user.getFirstName());
+        userApiDto.setLastName(user.getLastName());
+        userApiDto.setPhone(user.getPhone());
+        userApiDto.setRole(user.getRole());
+        if (user.getAvatar() != null) {
+            userApiDto.setImage(ApplicationConfig.getPathToAvatars() + user.getAvatar());
+        }
+        return userApiDto;
     }
-    public User toUser(UserDto userDto) {
-        User user = new User();
-        user.setId(userDto.getId());
-        user.setEmail(userDto.getEmail());
-        user.setFirstName(userDto.getFirstName());
-        user.setLastName(userDto.getLastName());
-        user.setPhone(userDto.getPhone());
-        user.setRoleDto(userDto.getRole());
-        return user;
+
+    public static UserDetails toUserDetails(User user) {
+        return new UserAuthenticationDto(user.getUsername(), user.getPassword(), user.getRole(), user.isEnabled());
+    }
+
+    public static User toUser(RegisterDto registerDto) {
+
+        return new User(null, registerDto.getUsername(), registerDto.getFirstName(), registerDto.getLastName(), registerDto.getPhone(), registerDto.getRole(), registerDto.getPassword(), 1, null);
+    }
+
+    public static User toUser(UserDetails user) {
+        return new User(null, user.getUsername(), null, null, null, Role.USER, user.getPassword(), user.isEnabled() ? 1 : 0, null);
     }
 }

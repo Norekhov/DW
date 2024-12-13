@@ -20,9 +20,9 @@ CREATE TABLE ad
 );
 CREATE TABLE comment
 (
-    pk        INT  NOT NULL PRIMARY KEY,
-    text      TEXT NOT NULL,
-    createdAt INT  NOT NULL,
+    pk        INT    NOT NULL PRIMARY KEY,
+    text      TEXT   NOT NULL,
+    createdAt BIGINT NOT NULL,
     user_id   INT REFERENCES user (id),
     ad_id     INT REFERENCES ad (pk)
 );
@@ -35,7 +35,7 @@ CREATE TABLE userAvatar
     data      BYTEA        NOT NULL,
     userZ_id  INT REFERENCES user (id)
 );
-CREATE TABLE adPicture
+CREATE TABLE adImage
 (
     id        INT          NOT NULL PRIMARY KEY,
     filePath  VARCHAR(255) NOT NULL,

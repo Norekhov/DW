@@ -1,10 +1,11 @@
 package ru.skypro.homework.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
+
 import java.util.Objects;
 
 @Entity
-@Table(name="comment")
+@Table(name = "comment")
 public class Comment {
 
     @Id
@@ -14,7 +15,7 @@ public class Comment {
     private String text;
 
     @Column(name = "createdat")
-    private Integer createdAt;
+    private long createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -23,12 +24,6 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ad_id")
     private Ad ad;
-
-    public Comment(Integer pk, String text, Integer createdAt) {
-        this.pk = pk;
-        this.text = text;
-        this.createdAt = createdAt;
-    }
 
     @Override
     public String toString() {
@@ -68,11 +63,11 @@ public class Comment {
         this.text = text;
     }
 
-    public Integer getCreatedAt() {
+    public long getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Integer createdAt) {
+    public void setCreatedAt(long createdAt) {
         this.createdAt = createdAt;
     }
 
