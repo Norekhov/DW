@@ -134,12 +134,10 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
     public User getCurrentUser() throws UnauthorizedException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null) {
-            System.out.println("---------------------auth == null---------------------------");
             throw new UnauthorizedException("Пользователь не авторизован");
         }
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException(userDetails.getUsername()));
-        System.out.println("---------------------"+user+"---------------------------");
         return user;
     }
 
