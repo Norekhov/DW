@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.skypro.homework.dto.RegisterDto;
+import ru.skypro.homework.exception.UserAlreadyExistsException;
+import ru.skypro.homework.mapper.UserMapper;
 import ru.skypro.homework.service.CustomUserDetailsManager;
 
 @CrossOrigin(value = "http://localhost:3000")
@@ -28,12 +30,13 @@ public class RegisterController {
     @PostMapping("/register")
     @Operation(summary = "Регистрация пользователя")
     public ResponseEntity<?> register(@RequestBody RegisterDto registerDto) {
-        if (!userService.userExists(registerDto.getUsername())) {
-            log.info("Попытка зарегистрировать пользователя с неуникальным логином {}", registerDto.getUsername());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        try {
+            userService.createUser(UserMapper.toUserDetails(registerDto));
+        } catch (UserAlreadyExistsException e) {
+            log.info(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
         log.info("Зарегистрирован новый пользователь {}", registerDto.getUsername());
-        userService.createUser(registerDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
 
     }

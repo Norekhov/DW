@@ -27,8 +27,11 @@ public class UserMapper {
         return new UserAuthenticationDto(user.getUsername(), user.getPassword(), user.getRole(), user.isEnabled());
     }
 
-    public static User toUser(RegisterDto registerDto) {
+    public static UserDetails toUserDetails(RegisterDto user) {
+        return new UserAuthenticationDto(user.getUsername(), user.getPassword(), user.getRole(), 1);
+    }
 
+    public static User toUser(RegisterDto registerDto) {
         return new User(null, registerDto.getUsername(), registerDto.getFirstName(), registerDto.getLastName(), registerDto.getPhone(), registerDto.getRole(), registerDto.getPassword(), 1, null);
     }
 

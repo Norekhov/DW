@@ -21,8 +21,8 @@ public class Ad {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-    @Column(name = "image_filename")
-    private String imageFilename;
+    @Column(name = "image_url")
+    private String imageUrl;
 
     @Override
     public String toString() {
@@ -87,11 +87,11 @@ public class Ad {
     public Ad() {
     }
 
-    public String getImageFilename() {
-        return imageFilename;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
     public void setImageUrl(String image) {
-        this.imageFilename = image;
+        this.imageUrl = image;
     }
 }

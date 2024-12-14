@@ -13,7 +13,7 @@ public class AdMapper {
         adDto.setTitle(ad.getTitle());
         adDto.setPrice(ad.getPrice());
         adDto.setAuthor(ad.getUser().getId());
-        adDto.setImage(ad.getImageFilename());
+        adDto.setImage(ad.getImageUrl());
         return adDto;
     }
 
@@ -27,7 +27,7 @@ public class AdMapper {
         to.setAuthorLastName(from.getUser().getLastName());
         to.setEmail(from.getUser().getUsername());
         to.setPhone(from.getUser().getPhone());
-        to.setImage(from.getImageFilename());
+        to.setImage(from.getImageUrl());
         return to;
     }
 }

@@ -7,50 +7,39 @@ import java.util.Objects;
 
 public class RegisterDto {
 
-    @Schema(type = "string",
-            description = "логин",
-            minLength = 4,
-            maxLength = 32)
+    @Schema(type = "string", description = "логин", minLength = 4, maxLength = 32)
     private String username;
 
-    @Schema(type = "string",
-            description = "пароль",
-            minLength = 8,
-            maxLength = 16)
+    @Schema(type = "string", description = "пароль", minLength = 8, maxLength = 16)
     private String password;
 
-    @Schema(type = "string",
-            description = "имя пользователя",
-            minLength = 2,
-            maxLength = 16)
+    @Schema(type = "string", description = "имя пользователя", minLength = 2, maxLength = 16)
     private String firstName;
 
-    @Schema(type = "string",
-            description = "фамилия пользователя",
-            minLength = 2,
-            maxLength = 16)
+    @Schema(type = "string", description = "фамилия пользователя", minLength = 2, maxLength = 16)
     private String lastName;
 
-    @Schema(type = "string",
-            description = "телефон пользователя",
-            pattern = "\\+7\\s?\\(?\\d{3}\\)?\\s?\\d{3}-?\\d{2}-?\\d{2}")
+    @Schema(type = "string", description = "телефон пользователя", pattern = "\\+7\\s?\\(?\\d{3}\\)?\\s?\\d{3}-?\\d{2}-?\\d{2}")
     private String phone;
 
-    @Schema(type = "string",
-            description = "роль пользователя",
-            allowableValues = {"USER", "ADMIN"})
+    @Schema(type = "string", description = "роль пользователя", allowableValues = {"USER", "ADMIN"})
     private Role role;
+
+    public RegisterDto() {
+    }
+
+    public RegisterDto(String username, String password, String firstName, String lastName, String phone, Role role) {
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.role = role;
+    }
 
     @Override
     public String toString() {
-        return "Register{" +
-                "username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", phone='" + phone + '\'' +
-                ", role=" + role +
-                '}';
+        return "Register{" + "username='" + username + '\'' + ", password='" + password + '\'' + ", firstName='" + firstName + '\'' + ", lastName='" + lastName + '\'' + ", phone='" + phone + '\'' + ", role=" + role + '}';
     }
 
     @Override
@@ -131,18 +120,6 @@ public class RegisterDto {
     }
 
     public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public RegisterDto() {
-    }
-
-    public RegisterDto(String username, String password, String firstName, String lastName, String phone, Role role) {
-        this.username = username;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phone = phone;
         this.role = role;
     }
 }
