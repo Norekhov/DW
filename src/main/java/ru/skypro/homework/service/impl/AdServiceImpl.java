@@ -118,8 +118,8 @@ public class AdServiceImpl implements AdService {
             throw new ForbiddenException("Попытка удалить чужое объявление: " + adId);
         }
         commentRepository.deleteAll(commentRepository.findByAdPk(adId));
-        if (ad.getImageFilename() != null) {
-            removeAdImage(ad.getImageFilename());
+        if (ad.getImageUrl() != null) {
+            removeAdImage(ad.getImageUrl());
         }
         adRepository.deleteById(adId);
     }
@@ -130,9 +130,9 @@ public class AdServiceImpl implements AdService {
         if (!checkAuthorization(ad)) {
             throw new ForbiddenException("Попытка обновить изображение чужого объявления");
         }
-        if (ad.getImageFilename() != null && Files.exists(Path.of(".", ad.getImageFilename()))) {
+        if (ad.getImageUrl() != null && Files.exists(Path.of(".", ad.getImageUrl()))) {
             try {
-                removeAdImage(ad.getImageFilename());
+                removeAdImage(ad.getImageUrl());
             } catch (Exception e) {
                 log.warn(e.getMessage());
             }

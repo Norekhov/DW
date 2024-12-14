@@ -6,12 +6,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.config.ApplicationConfig;
 import ru.skypro.homework.dto.NewPasswordDto;
-import ru.skypro.homework.dto.RegisterDto;
 import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.exception.UserAlreadyExistsException;
 import ru.skypro.homework.mapper.UserMapper;
@@ -34,9 +34,11 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
 
     private static final Logger log = LoggerFactory.getLogger(CustomUserDetailsManagerImpl.class);
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public CustomUserDetailsManagerImpl(UserRepository userRepository) {
+    public CustomUserDetailsManagerImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -67,23 +69,15 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
     /**
      * Новый пользователь из регистрационного эндпоинта
      *
-     * @param registerDto
+     * @param user
      */
     @Override
-    public void createUser(RegisterDto registerDto) {
-        if (userExists(registerDto.getUsername())) {
-            throw new UserAlreadyExistsException(registerDto.getUsername());
-        }
-        userRepository.save(UserMapper.toUser(registerDto));
-    }
-
-
-    @Override
-    public void createUser(UserDetails user) {
+    public void createUser(UserDetails user) throws UserAlreadyExistsException {
         if (userExists(user.getUsername())) {
             throw new UserAlreadyExistsException(user.getUsername());
         }
-        userRepository.save(UserMapper.toUser(user));
+        UserDetails userDetails = org.springframework.security.core.userdetails.User.builder().passwordEncoder(passwordEncoder::encode).password(user.getPassword()).username(user.getUsername()).roles(user.getAuthorities().toString()).build();
+        userRepository.save(UserMapper.toUser(userDetails));
     }
 
     @Override
@@ -108,6 +102,7 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
         userRepository.save(user);
         return updateUserDto;
     }
+
     @Override
     public void deleteUser(String username) {
         Optional<User> user = userRepository.findByUsername(username);

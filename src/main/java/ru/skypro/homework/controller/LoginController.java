@@ -17,7 +17,6 @@ import ru.skypro.homework.service.impl.LoginServiceImpl;
 public class LoginController {
     private static final Logger log = LoggerFactory.getLogger(LoginController.class);
     private final LoginServiceImpl authenticationProvider;
-
     public LoginController(LoginServiceImpl authenticationProvider) {
         this.authenticationProvider = authenticationProvider;
     }
