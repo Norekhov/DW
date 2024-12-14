@@ -13,6 +13,7 @@ import ru.skypro.homework.dto.AdDto;
 import ru.skypro.homework.dto.AdListDto;
 import ru.skypro.homework.dto.CreateOrUpdateAdDto;
 import ru.skypro.homework.dto.ExtendedAdDto;
+import ru.skypro.homework.exception.AdImageException;
 import ru.skypro.homework.exception.EntityNotFoundException;
 import ru.skypro.homework.service.AdService;
 
@@ -39,14 +40,15 @@ public class AdController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Добавление объявления")
-    public ResponseEntity<AdDto> addAd(@RequestParam("image") MultipartFile image, @RequestPart("properties") CreateOrUpdateAdDto ad) {
+    public ResponseEntity<AdDto> addAd(@RequestParam("image") MultipartFile image
+            , @RequestPart("properties") CreateOrUpdateAdDto ad) {
         log.info("Добавление объявления {}", ad.getTitle());
         return ResponseEntity.status(HttpStatus.CREATED).body(adService.addAd(image, ad));
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Получение информации об объявлении")
-    public ExtendedAdDto getAdById(@PathVariable Integer id) {
+    public ExtendedAdDto getAdById(@PathVariable Integer id) throws AdImageException {
         return adService.getAdById(id);
     }
 
@@ -74,8 +76,15 @@ public class AdController {
 
     @GetMapping("/me")
     @Operation(summary = "Получение объявлений авторизованного пользователя")
-    public AdListDto getUserAds() {
-        return adService.getUserAds();
+    public ResponseEntity<AdListDto> getUserAds() {
+        AdListDto userAds;
+        try {
+            userAds = adService.getUserAds();
+        } catch (Exception e) {
+            log.warn(e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AdListDto());
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(userAds);
     }
 
     @PatchMapping(path = "/{adId}/image",

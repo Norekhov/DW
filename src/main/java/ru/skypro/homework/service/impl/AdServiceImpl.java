@@ -10,6 +10,7 @@ import ru.skypro.homework.dto.*;
 import ru.skypro.homework.exception.AdImageException;
 import ru.skypro.homework.exception.EntityNotFoundException;
 import ru.skypro.homework.exception.ForbiddenException;
+import ru.skypro.homework.exception.UnauthorizedException;
 import ru.skypro.homework.mapper.AdMapper;
 import ru.skypro.homework.model.Ad;
 import ru.skypro.homework.model.User;
@@ -87,12 +88,12 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
-    public ExtendedAdDto getAdById(Integer id) {
+    public ExtendedAdDto getAdById(Integer id) throws AdImageException{
         return adRepository.findById(id).map(AdMapper::toExtendedAdDto).orElseThrow(() -> new AdImageException("Изображение не найдено"));
     }
 
     @Override
-    public AdListDto getUserAds() {
+    public AdListDto getUserAds() throws UnauthorizedException {
         Integer id = userService.getCurrentUser().getId();
         List<Ad> ads = adRepository.findByUserId(id);
         return new AdListDto(ads.size(), ads.stream().map(AdMapper::toDto).collect(Collectors.toList()));
