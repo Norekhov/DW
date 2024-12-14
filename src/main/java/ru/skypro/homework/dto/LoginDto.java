@@ -1,7 +1,7 @@
 package ru.skypro.homework.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import ru.skypro.homework.service.impl.СheckServiceImpl;
+import ru.skypro.homework.service.impl.CheckService;
 
 import java.util.Objects;
 
@@ -57,7 +57,7 @@ public class LoginDto {
     }
 
     public void setPassword(String password) {
-        if (СheckServiceImpl.checkLength(password, 8, 16)) {
+        if (CheckService.checkLength(password, 8, 16)) {
             this.password = password;
         } else {
             throw new IllegalArgumentException("Длина пароля от 8 до 16 символов");
@@ -65,7 +65,7 @@ public class LoginDto {
     }
 
     public void setUsername(String username) {
-        if (СheckServiceImpl.checkLength(username, 4, 32) && СheckServiceImpl.checkUsername(username)) {
+        if (CheckService.checkLength(username, 4, 32) && CheckService.checkUsername(username)) {
             this.username = username;
         } else {
             throw new IllegalArgumentException("Длина логина от 4 до 32 символов в формате \"yourmail@mail.ru\"");

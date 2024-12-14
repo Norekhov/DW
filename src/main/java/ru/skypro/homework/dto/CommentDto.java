@@ -22,7 +22,7 @@ public class CommentDto {
     @Schema(type = "integer",
             format = "int64",
             description = "дата и время создания комментария в миллисекундах с 00:00:00 01.01.1970")
-    private Integer createdAt;
+    private Long createdAt;
 
     @Schema(type = "integer",
             format = "int32",
@@ -82,11 +82,11 @@ public class CommentDto {
         this.authorFirstName = authorFirstName;
     }
 
-    public Integer getCreatedAt() {
+    public Long getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Integer createdAt) {
+    public void setCreatedAt(Long createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -109,7 +109,7 @@ public class CommentDto {
     public CommentDto() {
     }
 
-    public CommentDto(Integer author, String authorImage, String authorFirstName, Integer createdAt, Integer pk, String text) {
+    public CommentDto(Integer author, String authorImage, String authorFirstName, Long createdAt, Integer pk, String text) {
         this.author = author;
         this.authorImage = authorImage;
         this.authorFirstName = authorFirstName;

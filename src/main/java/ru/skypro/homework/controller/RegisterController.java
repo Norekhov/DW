@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.skypro.homework.dto.RegisterDto;
+import ru.skypro.homework.exception.UserAlreadyExistsException;
+import ru.skypro.homework.mapper.UserMapper;
 import ru.skypro.homework.service.CustomUserDetailsManager;
-
-import java.io.IOException;
 
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
@@ -21,20 +21,23 @@ import java.io.IOException;
 public class RegisterController {
 
     private static final Logger log = LoggerFactory.getLogger(RegisterController.class);
-    private final CustomUserDetailsManager customUserDetailsManager;
+    private final CustomUserDetailsManager userService;
 
-    public RegisterController(CustomUserDetailsManager customUserDetailsManager) {
-        this.customUserDetailsManager = customUserDetailsManager;
+    public RegisterController(CustomUserDetailsManager userService) {
+        this.userService = userService;
     }
 
     @PostMapping("/register")
     @Operation(summary = "Регистрация пользователя")
-    public ResponseEntity<?> register(@RequestBody RegisterDto registerDto) throws IOException {
-        if (!customUserDetailsManager.userExists(registerDto.getUsername())) {
-            customUserDetailsManager.createUser(registerDto);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    public ResponseEntity<?> register(@RequestBody RegisterDto registerDto) {
+        try {
+            userService.createUser(UserMapper.toUserDetails(registerDto));
+        } catch (UserAlreadyExistsException e) {
+            log.info(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
+        log.info("Зарегистрирован новый пользователь {}", registerDto.getUsername());
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+
     }
 }

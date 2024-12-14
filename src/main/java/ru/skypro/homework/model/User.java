@@ -1,9 +1,8 @@
 package ru.skypro.homework.model;
 
+import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 import ru.skypro.homework.dto.Role;
-
-import jakarta.persistence.*;
 
 import java.util.Objects;
 
@@ -30,10 +29,24 @@ public class User {
 
     private Integer enabled;
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public Integer getEnabled() {
+        return enabled;
+    }
+
+    private String avatar;
+
     public User() {
     }
 
-    public User(Integer id, String username, String firstName, String lastName, String phone, Role role, String password, Integer enabled) {
+    public User(Integer id, String username, String firstName, String lastName, String phone, Role role, String password, Integer enabled, String avatar) {
         this.id = id;
         this.username = username;
         this.firstName = firstName;
@@ -42,6 +55,7 @@ public class User {
         this.role = role;
         this.password = password;
         this.enabled = enabled;
+        this.avatar = avatar;
     }
 
     public Integer isEnabled() {

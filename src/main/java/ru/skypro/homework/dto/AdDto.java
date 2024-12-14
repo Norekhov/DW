@@ -6,38 +6,38 @@ import java.util.Objects;
 
 public class AdDto {
 
-    @Schema(type = "integer",
-            format = "int32",
-            description = "id автора объявления")
+    @Schema(type = "integer", format = "int32", description = "id автора объявления")
     private Integer author;
 
-    @Schema(type = "string",
-            description = "ссылка на картинку объявления")
+    @Schema(type = "string", description = "ссылка на картинку объявления")
     private String image;
 
-    @Schema(type = "integer",
-            format = "int32",
-            description = "id объявления")
+    @Schema(type = "integer", format = "int32", description = "id объявления")
     private Integer pk;
 
-    @Schema(type = "integer",
-            format = "int32",
-            description = "цена объявления")
+    @Schema(type = "integer", format = "int32", description = "цена объявления")
     private Integer price;
 
-    @Schema(type = "string",
-            description = "заголовок объявления")
+    @Schema(type = "string", description = "заголовок объявления")
     private String title;
+    @Schema(type = "string", description = "описание объявления")
+    private String adText;
+
+    public AdDto() {
+    }
+
+    public AdDto(Integer author, String image, Integer pk, Integer price, String title, String adText) {
+        this.author = author;
+        this.image = image;
+        this.pk = pk;
+        this.price = price;
+        this.title = title;
+        this.adText = adText;
+    }
 
     @Override
     public String toString() {
-        return "Ad{" +
-                "author=" + author +
-                ", image='" + image + '\'' +
-                ", pk=" + pk +
-                ", price=" + price +
-                ", title='" + title + '\'' +
-                '}';
+        return "Ad{" + "author=" + author + ", image='" + image + '\'' + ", pk=" + pk + ", price=" + price + ", title='" + title + '\'' + '}';
     }
 
     @Override
@@ -93,14 +93,11 @@ public class AdDto {
         this.title = title;
     }
 
-    public AdDto() {
+    public String getAdText() {
+        return adText;
     }
 
-    public AdDto(Integer author, String image, Integer pk, Integer price, String title) {
-        this.author = author;
-        this.image = image;
-        this.pk = pk;
-        this.price = price;
-        this.title = title;
+    public void setAdText(String adText) {
+        this.adText = adText;
     }
 }

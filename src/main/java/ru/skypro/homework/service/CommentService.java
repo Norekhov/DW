@@ -1,0 +1,15 @@
+package ru.skypro.homework.service;
+
+import ru.skypro.homework.dto.CommentDto;
+import ru.skypro.homework.dto.CommentsDto;
+import ru.skypro.homework.dto.CreateOrUpdateCommentDto;
+
+public interface CommentService {
+    CommentsDto getCommentsForAd(Integer adId);
+
+    CommentDto addComment(Integer adId, CreateOrUpdateCommentDto createCommentDto);
+
+    CommentDto updateComment(Integer adId, Integer commentId, CreateOrUpdateCommentDto createOrUpdateCommentDto);
+
+    Boolean deleteComment(Integer commentId);
+}

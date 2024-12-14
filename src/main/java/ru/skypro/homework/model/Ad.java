@@ -1,10 +1,11 @@
 package ru.skypro.homework.model;
 
 import jakarta.persistence.*;
+
 import java.util.Objects;
 
 @Entity
-@Table(name="ad")
+@Table(name = "ad")
 public class Ad {
 
     @Id
@@ -20,6 +21,8 @@ public class Ad {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+    @Column(name = "image_url")
+    private String imageUrl;
 
     @Override
     public String toString() {
@@ -47,10 +50,6 @@ public class Ad {
 
     public Integer getPk() {
         return pk;
-    }
-
-    public void setPk(Integer pk) {
-        this.pk = pk;
     }
 
     public Integer getPrice() {
@@ -88,11 +87,11 @@ public class Ad {
     public Ad() {
     }
 
-    public Ad(Integer pk, Integer price, String title, String adText, User user) {
-        this.pk = pk;
-        this.price = price;
-        this.title = title;
-        this.adText = adText;
-        this.user = user;
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String image) {
+        this.imageUrl = image;
     }
 }
