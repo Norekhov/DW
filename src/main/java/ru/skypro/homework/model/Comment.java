@@ -14,7 +14,7 @@ public class Comment {
 
     private String text;
 
-    @Column(name = "createdat")
+    @Column(name = "created_at")
     private long createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)

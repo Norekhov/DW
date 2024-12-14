@@ -2,6 +2,8 @@ package ru.skypro.homework.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.config.ApplicationConfig;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.UpdateUserDto;
+import ru.skypro.homework.exception.UnauthorizedException;
 import ru.skypro.homework.exception.UserAlreadyExistsException;
 import ru.skypro.homework.mapper.UserMapper;
 import ru.skypro.homework.model.User;
@@ -50,9 +53,7 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserDetails userDetails = UserMapper.toUserDetails(userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username)));
-        System.out.println(userDetails.getUsername() + " " + userDetails.getPassword() + " " + userDetails.getAuthorities());
-        return userDetails;
+        return UserMapper.toUserDetails(userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username)));
     }
 
     /**
@@ -130,10 +131,15 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
 
 
     @Override
-    public User getCurrentUser() {
+    public User getCurrentUser() throws UnauthorizedException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            System.out.println("---------------------auth == null---------------------------");
+            throw new UnauthorizedException("Пользователь не авторизован");
+        }
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException(userDetails.getUsername()));
-        System.out.println(user);
+        System.out.println("---------------------"+user+"---------------------------");
         return user;
     }
 

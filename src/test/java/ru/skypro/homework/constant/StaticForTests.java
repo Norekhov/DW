@@ -3,6 +3,7 @@ package ru.skypro.homework.constant;
 import ru.skypro.homework.dto.CreateOrUpdateAdDto;
 import ru.skypro.homework.dto.RegisterDto;
 import ru.skypro.homework.dto.Role;
+import ru.skypro.homework.model.User;
 
 import java.nio.file.Path;
 
@@ -36,6 +37,7 @@ public final class StaticForTests {
     public static final String USER_ADMIN_PASSWORD_HASH = "$2a$10$PHqLP4.5DV8NXkToIWpaKehb2rKIaSaxv74hAmrBifkzWBTqJNkyS";
     public static final Role USER_ADMIN_ROLE = Role.ADMIN;
     public static final RegisterDto USER_ADMIN_REGISTER_DTO = new RegisterDto(USER_ADMIN_EMAIL, USER_ADMIN_PASSWORD, USER_ADMIN_FIRST_NAME, USER_ADMIN_LAST_NAME, USER_ADMIN_PHONE, USER_ADMIN_ROLE);
+    public static final User USER_ADMIN = new User(USER_ADMIN_ID, USER_ADMIN_EMAIL, USER_ADMIN_FIRST_NAME, USER_ADMIN_LAST_NAME, USER_ADMIN_PHONE, USER_ADMIN_ROLE, USER_ADMIN_PASSWORD,1,"");
 
     public static final Integer USER_USER1_ID = 2;
     public static final String USER_USER1_EMAIL = "USERONE@mail.ru";
@@ -46,6 +48,7 @@ public final class StaticForTests {
     public static final String USER_USER1_PASSWORD_HASH = "$2a$10$4eG1.GBPawmSx7fuMwQOE.hz7zVjr.AERz7KSCt0PuQg7iHRVpKh2";
     public static final Role USER_USER1_ROLE = Role.USER;
     public static final RegisterDto USER_USER1_REGISTER_DTO = new RegisterDto(USER_USER1_EMAIL, USER_USER1_PASSWORD, USER_USER1_FIRST_NAME, USER_USER1_LAST_NAME, USER_USER1_PHONE, USER_USER1_ROLE);
+    public static final User USER_USER1 = new User(USER_USER1_ID, USER_USER1_EMAIL, USER_USER1_FIRST_NAME, USER_USER1_LAST_NAME, USER_USER1_PHONE, USER_USER1_ROLE, USER_USER1_PASSWORD,1,"");
 
     public static final Integer USER_USER2_ID = 3;
     public static final String USER_USER2_EMAIL = "USERTWO@mail.ru";
@@ -55,5 +58,8 @@ public final class StaticForTests {
     public static final String USER_USER2_PHONE = "+7(912)345-67-89";
     public static final Role USER_USER2_ROLE = Role.USER;
     public static final RegisterDto USER_USER2_REGISTER_DTO = new RegisterDto(USER_USER2_EMAIL, USER_USER2_PASSWORD, USER_USER2_FIRST_NAME, USER_USER2_LAST_NAME, USER_USER2_PHONE, USER_USER2_ROLE);
+    public static final User USER_USER2 = new User(USER_USER2_ID, USER_USER2_EMAIL, USER_USER2_FIRST_NAME, USER_USER2_LAST_NAME, USER_USER2_PHONE, USER_USER2_ROLE, USER_USER2_PASSWORD,1,"");
+
+    public static final String TEST_COMMENT_TEXT = "Test comment text";
 
 }
