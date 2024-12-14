@@ -7,6 +7,18 @@ import java.util.Objects;
 
 public class LoginDto {
 
+    @Schema(type = "string",
+            description = "пароль",
+            minLength = 8,
+            maxLength = 16)
+    private String password;
+
+    @Schema(type = "string",
+            description = "логин",
+            minLength = 4,
+            maxLength = 32)
+    private String username;
+
     public String getPassword() {
         return password;
     }
@@ -22,18 +34,6 @@ public class LoginDto {
 
     public LoginDto() {
     }
-
-    @Schema(type = "string",
-            description = "пароль",
-            minLength = 8,
-            maxLength = 16)
-    private String password;
-
-    @Schema(type = "string",
-            description = "логин",
-            minLength = 4,
-            maxLength = 32)
-    private String username;
 
     @Override
     public String toString() {
