@@ -4,7 +4,9 @@ import org.springframework.stereotype.Component;
 import ru.skypro.homework.dto.AdDto;
 import ru.skypro.homework.dto.ExtendedAdDto;
 import ru.skypro.homework.model.Ad;
-
+/**
+ * Класс для преобразования (маппинга) между сущностями и DTO - объявления.
+ */
 @Component
 public class AdMapper {
     public static AdDto toDto(Ad ad) {

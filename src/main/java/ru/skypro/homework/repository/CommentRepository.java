@@ -5,8 +5,14 @@ import org.springframework.stereotype.Repository;
 import ru.skypro.homework.model.Comment;
 
 import java.util.List;
-
+/**
+ * Репозиторий для работы с сущностями комментария.
+ */
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
+
+    /**
+     * Находит список комментариев по идентификатору объявления.
+     */
     List<Comment> findByAdPk(Integer adId);
 }

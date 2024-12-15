@@ -9,7 +9,9 @@ import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.dto.UserApiDto;
 import ru.skypro.homework.dto.UserAuthenticationDto;
 import ru.skypro.homework.model.User;
-
+/**
+ * Класс для преобразования (маппинга) между сущностями и DTO - пользователи.
+ */
 public class UserMapper {
 
     private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);

@@ -3,7 +3,9 @@ package ru.skypro.homework.service;
 import ru.skypro.homework.dto.CommentDto;
 import ru.skypro.homework.dto.CommentsDto;
 import ru.skypro.homework.dto.CreateOrUpdateCommentDto;
-
+/**
+ * Интерефейс для сервиса комментариев.
+ */
 public interface CommentService {
     CommentsDto getCommentsForAd(Integer adId);
 

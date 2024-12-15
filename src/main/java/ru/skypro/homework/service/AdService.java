@@ -7,7 +7,9 @@ import ru.skypro.homework.exception.ForbiddenException;
 import ru.skypro.homework.model.Ad;
 
 import java.io.IOException;
-
+/**
+ * Интерефейс для сервиса объявлений.
+ */
 public interface AdService {
     void removeAdImage(String adImageUrl);
 

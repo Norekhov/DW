@@ -4,7 +4,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import ru.skypro.homework.service.impl.CheckService;
 
 import java.util.Objects;
-
+/**
+ * DTO (Data Transfer Object) для создания или обновления объявления.
+ * <p>
+ * В классе представлены данные для создания или обновления объявления, а именно: заголовок, цена, описание.
+ * Также в классе реализованы конструкторы, геттеры, сеттеры, equals, hashCode и toString.
+ * </p>
+ */
 public class CreateOrUpdateAdDto {
 
     @Schema(type = "string",

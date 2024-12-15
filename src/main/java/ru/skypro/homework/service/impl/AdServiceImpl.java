@@ -28,7 +28,9 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-
+/**
+ * Сервис для управления объявлениями.
+ */
 @Service
 public class AdServiceImpl implements AdService {
     private static final Logger log = LoggerFactory.getLogger(AdServiceImpl.class);
@@ -42,13 +44,17 @@ public class AdServiceImpl implements AdService {
         this.adRepository = adRepository;
         this.commentRepository = commentRepository;
     }
-
+    /**
+     * Получает все объявления.
+     */
     @Override
     public AdListDto getAllAds() {
         List<Ad> ads = adRepository.findAll();
         return new AdListDto(ads.size(), ads.stream().map(AdMapper::toDto).collect(Collectors.toList()));
     }
-
+    /**
+     * Добавляет новое объявление.
+     */
     @Override
     public AdDto addAd(MultipartFile image, CreateOrUpdateAdDto ad) {
         Ad newAd = new Ad();
@@ -67,7 +73,9 @@ public class AdServiceImpl implements AdService {
         newAd.setImageUrl(imageUrl);
         return AdMapper.toDto(adRepository.save(newAd));
     }
-
+    /**
+     * Сохраняет картинку объявления.
+     */
     @Override
     public void saveAdImage(MultipartFile image, String adImageUrl) throws IOException {
         Path parentDir = Path.of(".", ApplicationConfig.getPathToAdImages());
@@ -81,19 +89,25 @@ public class AdServiceImpl implements AdService {
         Path path = Path.of(".", adImageUrl);
         Files.write(path, image.getBytes());
     }
-
+    /**
+     * Получение объявления по идентификатору.
+     */
     @Override
     public ExtendedAdDto getAdById(Integer id) throws AdImageException{
         return adRepository.findById(id).map(AdMapper::toExtendedAdDto).orElseThrow(() -> new AdImageException("Изображение не найдено"));
     }
-
+    /**
+     * Получает все объявления текущего пользователя.
+     */
     @Override
     public AdListDto getUserAds() throws UnauthorizedException {
         Integer id = userService.getCurrentUser().getId();
         List<Ad> ads = adRepository.findByUserId(id);
         return new AdListDto(ads.size(), ads.stream().map(AdMapper::toDto).collect(Collectors.toList()));
     }
-
+    /**
+     * Обновляет существующее объявление.
+     */
     @Override
     public AdDto updateAd(Integer adId, CreateOrUpdateAdDto ad) throws ForbiddenException {
         Ad updatedAd = adRepository.findById(adId).orElseThrow(() -> new EntityNotFoundException("Попытка обновить несуществующее объявление " + adId));
@@ -110,7 +124,9 @@ public class AdServiceImpl implements AdService {
 
         return AdMapper.toDto(adRepository.save(updatedAd));
     }
-
+    /**
+     * Удаляет объявление по его идентификатору.
+     */
     @Override
     public void removeAd(Integer adId) throws EntityNotFoundException, ForbiddenException {
         Ad ad = adRepository.findById(adId).orElseThrow(() -> new EntityNotFoundException("Попытка удалить несуществующие объявление: " + adId));
@@ -123,7 +139,9 @@ public class AdServiceImpl implements AdService {
         }
         adRepository.deleteById(adId);
     }
-
+    /**
+     * Удаляет картинку объявления.
+     */
     @Override
     public void removeAdImage(String adImageUrl) {
         Path path = Path.of(".", adImageUrl);
@@ -133,6 +151,9 @@ public class AdServiceImpl implements AdService {
             log.warn("Не удаётся удалить изображение объявления {}", path);
         }
     }
+    /**
+     * Обновляет картинку объявления.
+     */
     @Override
     public byte[] updateAdImage(Integer adId, MultipartFile image) throws IOException, ForbiddenException {
         Ad ad = adRepository.findById(adId).orElseThrow(() -> new EntityNotFoundException("Попытка обновить изображение для несуществующего объявления" + adId));
@@ -153,7 +174,9 @@ public class AdServiceImpl implements AdService {
         adRepository.save(ad);
         return image.getBytes();
     }
-
+    /**
+     * Просмотр картинки объявления из БД.
+     */
     @Override
     public byte[] readAdImageFromFs(String adImageUrl) throws IOException {
         Path path = Path.of(".", ApplicationConfig.getPathToAdImages()).resolve(adImageUrl);
@@ -162,7 +185,9 @@ public class AdServiceImpl implements AdService {
         }
         return Files.readAllBytes(path);
     }
-
+    /**
+     * Проверка авторизации.
+     */
     @Override
     public boolean checkAuthorization(Ad ad) {
         User currentUser = userService.getCurrentUser();

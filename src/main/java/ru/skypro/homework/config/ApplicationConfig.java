@@ -3,7 +3,9 @@ package ru.skypro.homework.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
+/**
+ * Конфигурация безопасности картинок объявлений и аватаров пользователей.
+ */
 @Configuration
 @EnableTransactionManagement
 public class ApplicationConfig {

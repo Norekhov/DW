@@ -3,7 +3,14 @@ package ru.skypro.homework.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Objects;
-
+/**
+ * DTO (Data Transfer Object) для расширенного представления объявления.
+ * <p>
+ * В классе представлены данные об объявлении, а именно: имя, фамилия, логин и телефон автора,
+ * уникальный идентификатор, ссылка на картинку, цена и заголовок.
+ * Также в классе реализованы конструкторы, геттеры, сеттеры, equals, hashCode и toString.
+ * </p>
+ */
 public class ExtendedAdDto {
 
     @Schema(type = "integer",

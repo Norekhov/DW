@@ -3,7 +3,14 @@ package ru.skypro.homework.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Objects;
-
+/**
+ * DTO (Data Transfer Object) для программного интерфейса пользователя.
+ * <p>
+ * В классе представлены данные для программного интерфейса пользователя, а именно:
+ * уникальный идентификатор пользователя, его логин, имя, фамилия, телефон, роль, а также ссылка на аватар пользователя.
+ * Также в классе реализованы конструкторы, геттеры, сеттеры, equals, hashCode и toString.
+ * </p>
+ */
 public class UserApiDto {
     @Schema(type = "integer", format = "int32", description = "id пользователя")
     private Integer id;

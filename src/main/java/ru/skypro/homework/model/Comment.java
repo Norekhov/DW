@@ -4,7 +4,14 @@ import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 
 import java.util.Objects;
-
+/**
+ * Сущность для представления комментария.
+ * <p>
+ * В классе представлены данные для сущности комментария, а именно: уникальный идентификатор комментария, текстовка,
+ * пользователь  и уникальный идентификатор объявления.
+ * Также в классе реализованы конструкторы, геттеры, сеттеры, equals, hashCode и toString.
+ * </p>
+ */
 @Entity
 @Table(name = "comment")
 @Transactional

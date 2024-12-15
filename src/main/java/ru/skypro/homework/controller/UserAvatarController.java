@@ -8,18 +8,24 @@ import org.springframework.web.bind.annotation.*;
 import ru.skypro.homework.service.CustomUserDetailsManager;
 
 import java.io.IOException;
-
+/**
+ * Контроллер для работы с аватарами пользователей.
+ */
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
 @RequestMapping("/avatars")
 @Tag(name = "Аватары пользователей")
 public class UserAvatarController {
     private final CustomUserDetailsManager userService;
-
+    /**
+     * Конструктор контроллера UserAvatarController.
+     */
     public UserAvatarController(CustomUserDetailsManager userService) {
         this.userService = userService;
     }
-
+    /**
+     * Загрузка аватара пользователя.
+     */
     @GetMapping(value = "/{avatarId}", produces = {
             MediaType.IMAGE_JPEG_VALUE,
             MediaType.IMAGE_GIF_VALUE,

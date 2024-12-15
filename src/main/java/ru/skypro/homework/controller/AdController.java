@@ -21,7 +21,9 @@ import ru.skypro.homework.exception.ForbiddenException;
 import ru.skypro.homework.service.AdService;
 
 import java.io.IOException;
-
+/**
+ * Контроллер для работы с объявлениями.
+ */
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
 @RequestMapping("/ads")
@@ -29,24 +31,32 @@ import java.io.IOException;
 public class AdController {
     private static final Logger log = LoggerFactory.getLogger(AdController.class);
     private final AdService adService;
-
+    /**
+     * Конструктор контроллера AdController.
+     */
     public AdController(AdService adService) {
         this.adService = adService;
     }
-
+    /**
+     * Получение всех объявлений.
+     */
     @GetMapping
     @Operation(summary = "Получение всех объявлений")
     public AdListDto getAllAds() {
         return adService.getAllAds();
     }
-
+    /**
+     * Добавление объявления.
+     */
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Добавление объявления")
     public ResponseEntity<AdDto> addAd(@RequestParam("image") MultipartFile image, @RequestPart("properties") CreateOrUpdateAdDto ad) {
         log.info("Добавление объявления {}", ad.getTitle());
         return ResponseEntity.status(HttpStatus.CREATED).body(adService.addAd(image, ad));
     }
-
+    /**
+     * Получение информации об объявлении.
+     */
     @GetMapping("/{id}")
     @Operation(summary = "Получение информации об объявлении")
     public ExtendedAdDto getAdById(@PathVariable Integer id) {
@@ -58,7 +68,9 @@ public class AdController {
         }
         return ad;
     }
-
+    /**
+     * Обновление информации об объявлении.
+     */
     @PatchMapping("/{id}")
     @Operation(summary = "Обновление информации об объявлении")
     public ResponseEntity<AdDto> updateAd(@PathVariable Integer id, @RequestBody CreateOrUpdateAdDto ad) {
@@ -71,7 +83,9 @@ public class AdController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(adDto);
     }
-
+    /**
+     * Удаление объявления.
+     */
     @DeleteMapping("/{id}")
     @Operation(summary = "Удаление объявления")
     public ResponseEntity<?> removeAd(@PathVariable Integer id, Authentication auth) {
@@ -86,7 +100,9 @@ public class AdController {
         }
         return ResponseEntity.status(httpStatus).body(httpStatus.getReasonPhrase());
     }
-
+    /**
+     * Получение объявлений авторизованного пользователя.
+     */
     @GetMapping("/me")
     @Operation(summary = "Получение объявлений авторизованного пользователя")
     public ResponseEntity<AdListDto> getUserAds() {
@@ -99,7 +115,9 @@ public class AdController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(userAds);
     }
-
+    /**
+     * Обновление изображения объявления.
+     */
     @PatchMapping(path = "/{adId}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @Operation(summary = "Обновление изображения объявления")
     public ResponseEntity<byte[]> updateAdImage(@PathVariable Integer adId, @RequestParam("image") MultipartFile image) throws IOException {

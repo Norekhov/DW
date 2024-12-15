@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.skypro.homework.dto.RegisterDto;
 import ru.skypro.homework.exception.UserAlreadyExistsException;
 import ru.skypro.homework.service.CustomUserDetailsManager;
-
+/**
+ * Контроллер для регистрации пользователя.
+ */
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
 @Tag(name = "Регистрация")
@@ -21,11 +23,15 @@ public class RegisterController {
 
     private static final Logger log = LoggerFactory.getLogger(RegisterController.class);
     private final CustomUserDetailsManager userService;
-
+    /**
+     * Конструктор контроллера RegisterController.
+     */
     public RegisterController(CustomUserDetailsManager userService) {
         this.userService = userService;
     }
-
+    /**
+     * Регистрация пользователя.
+     */
     @PostMapping("/register")
     @Operation(summary = "Регистрация пользователя")
     public ResponseEntity<?> register(@RequestBody RegisterDto registerDto) {
