@@ -1,15 +1,18 @@
 package ru.skypro.homework.model;
 
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 
 import java.util.Objects;
 
 @Entity
 @Table(name = "comment")
+@Transactional
 public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "comment_pk")
     private Integer pk;
 
     private String text;
@@ -22,7 +25,7 @@ public class Comment {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ad_id")
+    @JoinColumn(name = "ad_pk")
     private Ad ad;
 
     @Override

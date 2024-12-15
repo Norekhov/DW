@@ -1,5 +1,6 @@
 package ru.skypro.homework.controller;
 
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,12 +13,15 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.repository.AdRepository;
+import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AdService;
+import ru.skypro.homework.service.CommentService;
 import ru.skypro.homework.service.CustomUserDetailsManager;
 
 import java.net.URI;
@@ -29,6 +33,7 @@ import static ru.skypro.homework.constant.StaticForTests.*;
 
 @Sql(scripts = {"classpath:schema.sql", "classpath:test-data.sql"}, executionPhase = BEFORE_TEST_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@EnableTransactionManagement
 class CommentControllerTest {
 
     @LocalServerPort
@@ -50,28 +55,20 @@ class CommentControllerTest {
     @MockitoSpyBean
     AdRepository adRepository;
 
-    @Autowired
-    CustomUserDetailsManager customUserDetailsManager;
-
     @MockitoSpyBean
     UserRepository userRepository;
+
+    @MockitoSpyBean
+    private CommentController commentController;
+
+    @MockitoSpyBean
+    private CommentService commentService;
+    @Autowired
+    private CommentRepository commentRepository;
 
     @BeforeEach
     void init() {
         baseUrl = "http://localhost:" + port + "/";
-        restTemplate.postForEntity(baseUrl + "register", USER_ADMIN_REGISTER_DTO, ResponseEntity.class);
-        restTemplate.postForEntity(baseUrl + "register", USER_USER1_REGISTER_DTO, ResponseEntity.class);
-        restTemplate.postForEntity(baseUrl + "register", USER_USER2_REGISTER_DTO, ResponseEntity.class);
-
-//        Ad newAd = new Ad();
-//        newAd.setUser(userService.getCurrentUser());
-//        newAd.setTitle(AD_1_TITLE);
-//        newAd.setAdText(AD_1_DESCRIPTION);
-//        newAd.setPrice(AD_1_PRICE);
-//        String extension = StringUtils.getFilenameExtension(image.getOriginalFilename());
-//        String imageUrl = ApplicationConfig.getPathToAdImages() + UUID.randomUUID() + "." + extension;
-//        newAd.setImageUrl(imageUrl);
-//        adService.saveAdImage(image, imageUrl);
     }
 
     @AfterEach
@@ -82,21 +79,30 @@ class CommentControllerTest {
 
 
     @Test
+    @Transactional ////решает LazyInitializationException из-за lazy связи с users
     void addComment() {
+        System.out.println(commentRepository.findAll());
         CommentDto comment = new CommentDto();
         comment.setAuthor(USER_USER1_ID);
         comment.setText(TEST_COMMENT_TEXT);
-        ResponseEntity<CommentDto> response = restTemplate.withBasicAuth(USER_USER1_EMAIL, USER_USER1_PASSWORD).postForEntity(baseUrl + "1/comments", comment, CommentDto.class);
+        ResponseEntity<CommentDto> response = restTemplate
+                .withBasicAuth(USER_USER1_EMAIL, USER_USER1_PASSWORD)
+                .postForEntity(baseUrl + "ads/1/comments", comment, CommentDto.class);
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(comment.getText(), response.getBody().getText());
+        Mockito.verify(commentController, Mockito.times(1)).addComment(Mockito.any(), Mockito.any());
+        Mockito.verify(commentService, Mockito.times(1)).addComment(Mockito.any(), Mockito.any());
 
     }
 
     @Test
     void getComments() {
-        addComment();
-
-        ResponseEntity<ExtendedAdDto> response = restTemplate.withBasicAuth(USER_ADMIN_EMAIL, USER_ADMIN_PASSWORD).getForEntity(baseUrl + "ads/me", ExtendedAdDto.class);
+        ResponseEntity<ExtendedAdDto> response = restTemplate
+                .withBasicAuth(USER_ADMIN_EMAIL, USER_ADMIN_PASSWORD)
+                .getForEntity(baseUrl + "ads/1/comments", ExtendedAdDto.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        Mockito.verify(adService, Mockito.times(1)).getUserAds();
+        Mockito.verify(commentController, Mockito.times(1)).getComments(1);
+        Mockito.verify(commentService, Mockito.times(1)).getCommentsForAd(1);
 
     }
 

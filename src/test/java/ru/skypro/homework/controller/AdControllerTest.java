@@ -1,5 +1,6 @@
 package ru.skypro.homework.controller;
 
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +13,16 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import ru.skypro.homework.dto.*;
 import ru.skypro.homework.mapper.AdMapper;
 import ru.skypro.homework.repository.AdRepository;
+import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AdService;
+import ru.skypro.homework.service.impl.CustomUserDetailsManagerImpl;
 
 import java.net.URI;
 
@@ -28,17 +32,10 @@ import static ru.skypro.homework.constant.StaticForTests.*;
 
 @Sql(scripts = {"classpath:schema.sql", "classpath:test-data.sql"}, executionPhase = BEFORE_TEST_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-//@AutoConfigureMockMvc(addFilters = false)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@EnableTransactionManagement
 class AdControllerTest {
 
-    //    @TestConfiguration
-//    static class TestRestTemplateAuthenticationConfiguration {
-//        @Bean
-//        public RestTemplateBuilder restTemplateBuilder() {
-//            return new RestTemplateBuilder().basicAuthentication(USER_ADMIN_EMAIL, USER_ADMIN_PASSWORD);
-//        }
-//    }
     @LocalServerPort
     int port;
     String baseUrl;
@@ -55,24 +52,27 @@ class AdControllerTest {
     @MockitoSpyBean
     UserRepository userRepository;
 
+    @Autowired
+    private CustomUserDetailsManagerImpl customUserDetailsManagerImpl;
+
+    @Autowired
+    private UserController userController;
+
+    @MockitoSpyBean
+    private AdController adController;
+    @Autowired
+    private CommentRepository commentRepository;
+
     @BeforeEach
     void init() {
         baseUrl = "http://localhost:" + port + "/";
-//        restTemplate.postForLocation(baseUrl + "logout",new LoginDto(USER_ADMIN_PASSWORD,USER_ADMIN_EMAIL));
-        SecurityContextHolder.createEmptyContext();
-//        restTemplate = restTemplate.withBasicAuth(USER_ADMIN_EMAIL, USER_ADMIN_PASSWORD);
-//        BasicAuthenticationInterceptor bai = new BasicAuthenticationInterceptor(USER_USER1_EMAIL, USER_USER1_PASSWORD);
-//        restTemplate.getRestTemplate().getInterceptors().add(bai);
-//        restTemplate.postForEntity(baseUrl + "register"
-//                , USER_ADMIN_REGISTER_DTO, ResponseEntity.class);
-//        restTemplate.postForEntity(baseUrl + "register"
-//                , USER_USER1_REGISTER_DTO, ResponseEntity.class);
     }
 
     @AfterEach
     void cleanDB() {
         adRepository.deleteAll();
         userRepository.deleteAll();
+        commentRepository.deleteAll();
     }
 
 
@@ -139,7 +139,6 @@ class AdControllerTest {
     }
 
     @Test
-    @PreAuthorize("authenticated")
     void getAdById() {
         ResponseEntity<ExtendedAdDto> response = restTemplate.withBasicAuth(USER_ADMIN_EMAIL, USER_ADMIN_PASSWORD).getForEntity(baseUrl + "ads/" + 1, ExtendedAdDto.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -147,21 +146,42 @@ class AdControllerTest {
     }
 
     @Test
+    @Transactional ////решает LazyInitializationException из-за lazy связи с users
     void updateAd() {
-        AdDto ad = AdMapper.toDto(adRepository.findById(1).orElseThrow());
-        int oldPrice = ad.getPrice();
-        ad.setPrice(oldPrice + 1);
-        AdDto response = restTemplate.withBasicAuth(USER_ADMIN_EMAIL, USER_ADMIN_PASSWORD).patchForObject(baseUrl + "ads/" + 1, ad, AdDto.class);
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-        Mockito.verify(adService, Mockito.times(1)).updateAd(1, Mockito.any());
+        AdDto ad1 = AdMapper.toDto(adRepository.findById(1).orElseThrow());
+        int oldPrice = ad1.getPrice();
+        ad1.setPrice(oldPrice + 1);
+        restTemplate.withBasicAuth(USER_ADMIN_EMAIL, USER_ADMIN_PASSWORD).patchForObject(baseUrl + "ads/" + "1", ad1, AdDto.class);
+        Mockito.verify(adController, Mockito.times(1)).updateAd(Mockito.any(), Mockito.any());
+        Mockito.verify(adService, Mockito.times(1)).updateAd(Mockito.any(), Mockito.any());
+        assertEquals(oldPrice + 1, ad1.getPrice());
+
+        //Попытка поменять чужое объявление
+        AdDto ad2 = AdMapper.toDto(adRepository.findById(2).orElseThrow());
+        int oldPrice2 = ad2.getPrice();
+        ad2.setPrice(oldPrice2 + 1);
+        restTemplate.withBasicAuth(USER_USER1_EMAIL, USER_USER1_PASSWORD).patchForObject(baseUrl + "ads/" + "2", ad1, AdDto.class);
+        assertEquals(oldPrice2, adRepository.findById(2).orElseThrow().getPrice());
     }
 
     @Test
     void removeAd() {
-
+        //удалям своё объявление
+        restTemplate.withBasicAuth(USER_ADMIN_EMAIL, USER_ADMIN_PASSWORD).delete(baseUrl + "ads/" + 1);
+        Mockito.verify(adService, Mockito.times(1)).removeAd(1);
+        //удаляем админом объявление пользователя
+        restTemplate.withBasicAuth(USER_ADMIN_EMAIL, USER_ADMIN_PASSWORD).delete(baseUrl + "ads/" + 4);
+        Mockito.verify(adService, Mockito.times(1)).removeAd(4);
+        //удаляем чужое объявление
+        restTemplate.withBasicAuth(USER_USER1_EMAIL, USER_USER1_PASSWORD).delete(baseUrl + "ads/" + 2);
+        Mockito.verify(adService, Mockito.times(1)).removeAd(2);
+        //удаляем уже удалённое объявление
+        restTemplate.withBasicAuth(USER_USER1_EMAIL, USER_USER1_PASSWORD).delete(baseUrl + "ads/" + 1);
+        assertEquals(adRepository.findAll().size(),2,"В базе данных осталось 2 объявления из 4");
     }
 
     @Test
     void updateAdImage() {
+
     }
 }

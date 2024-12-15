@@ -41,10 +41,10 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentDto updateComment(Integer adId, Integer commentId, CreateOrUpdateCommentDto createOrUpdateCommentDto) {
+    public CommentDto updateComment(Integer adId, Integer commentId, CreateOrUpdateCommentDto updateCommentDto) {
         Ad ad = adRepository.findById(adId).orElseThrow();
         Comment comment = commentRepository.findById(commentId).orElseThrow();
-        comment.setText(createOrUpdateCommentDto.getText());
+        comment.setText(updateCommentDto.getText());
         comment.setCreatedAt(System.currentTimeMillis());
         return CommentMapper.toDto(commentRepository.save(comment));
     }

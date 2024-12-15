@@ -12,14 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public interface AdService {
-    default void removeAdImage(String adImageUrl) {
-        Path path = Path.of(".", adImageUrl);
-        try {
-            Files.delete(path);
-        } catch (IOException e) {
-            throw new AdImageException("Не удаётся удалить изображение объявления " + path);
-        }
-    }
+    void removeAdImage(String adImageUrl);
 
     AdListDto getAllAds();
 
