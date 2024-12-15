@@ -4,7 +4,14 @@ import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 
 import java.util.Objects;
-
+/**
+ * Сущность для представления объявления.
+ * <p>
+ * В классе представлены данные об сущности объявления, а именно: автор, ссылка на картинку,
+ * уникальный идентификатор, цена, заголовок и текст.
+ * Также в классе реализованы конструкторы, геттеры, сеттеры, equals, hashCode и toString.
+ * </p>
+ */
 @Entity
 @Table(name = "ad")
 @Transactional

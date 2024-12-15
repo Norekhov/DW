@@ -16,7 +16,9 @@ import ru.skypro.homework.service.CommentService;
 import ru.skypro.homework.service.CustomUserDetailsManager;
 
 import java.util.List;
-
+/**
+ * Сервис для управления комментариями к объявлениям.
+ */
 @Service
 public class CommentServiceImpl implements CommentService {
 
@@ -31,12 +33,17 @@ public class CommentServiceImpl implements CommentService {
         this.adRepository = adRepository;
         this.customUserDetailsManager = customUserDetailsManager;
     }
+    /**
+     * Получает список комментариев для указанного объявления.
+     */
     @Override
     public CommentsDto getCommentsForAd(Integer adId) {
         List<CommentDto> comments = commentRepository.findByAdId(adId).stream().map(CommentMapper::toDto).toList();
         return new CommentsDto(comments.size(), comments);
     }
-
+    /**
+     * Добавляет новый комментарий к объявлению.
+     */
     @Override
     public CommentDto addComment(Integer adId, CreateOrUpdateCommentDto createCommentDto) {
         log.info("Пользователь {} добавил комментарий к объявлению {}",customUserDetailsManager.getCurrentUser().getId(),adId);
@@ -44,7 +51,9 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = CommentMapper.toComment(createCommentDto, customUserDetailsManager.getCurrentUser(), System.currentTimeMillis(), ad);
         return CommentMapper.toDto(commentRepository.save(comment));
     }
-
+    /**
+     * Обновляет комментарий к объявлению.
+     */
     @Override
     public CommentDto updateComment(Integer adId, Integer commentId, CreateOrUpdateCommentDto updateCommentDto) {
         log.info("Пользователь {} обновляет комментарий {}", customUserDetailsManager.getCurrentUser().getId(), commentId);
@@ -54,7 +63,9 @@ public class CommentServiceImpl implements CommentService {
         comment.setCreatedAt(System.currentTimeMillis());
         return CommentMapper.toDto(commentRepository.save(comment));
     }
-
+    /**
+     * Удаляет комментарий к объявлению.
+     */
     @Override
     public void deleteComment(Integer commentId) {
         log.info("Пользователь {} удаляет комментарий {}", customUserDetailsManager.getCurrentUser().getId(), commentId);

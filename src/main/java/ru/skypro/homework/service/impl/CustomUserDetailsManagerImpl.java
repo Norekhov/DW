@@ -30,7 +30,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Сервис для работы с пользователями
+ * Сервис для работы с пользователями.
  */
 @Service
 public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
@@ -79,7 +79,9 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
         }
         userRepository.save(UserMapper.toUser(user));
     }
-
+    /**
+     * Создание нового пользователя.
+     */
     @Override
     public void createUser(RegisterDto user) {
         if (userExists(user.getUsername())) {
@@ -88,13 +90,16 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
         User userEncoded = UserMapper.toEncodedUser(user);
         userRepository.save(userEncoded);
     }
-
-
+    /**
+     * Обновление пользователя UserDetails.
+     */
     @Override
     public void updateUser(UserDetails user) {
         updateUser(UserMapper.toUser(user));
     }
-
+    /**
+     * Обновление пользователя User.
+     */
     @Override
     public void updateUser(User user) {
         if (!userExists(user.getUsername())) {
@@ -102,7 +107,9 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
         }
         userRepository.save(user);
     }
-
+    /**
+     * Обновление пользователя DTO.
+     */
     @Override
     public UpdateUserDto updateUser(UpdateUserDto updateUserDto) {
         User user = getCurrentUser();
@@ -112,7 +119,9 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
         userRepository.save(user);
         return updateUserDto;
     }
-
+    /**
+     * Удаление пользователя.
+     */
     @Override
     public void deleteUser(String username) {
         Optional<User> user = userRepository.findByUsername(username);
@@ -121,12 +130,16 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
         }
         userRepository.delete(user.get());
     }
-
+    /**
+     * Изменение пароля DTO.
+     */
     @Override
     public void changePassword(NewPasswordDto newPasswordDto) {
         changePassword(newPasswordDto.getCurrentPassword(), newPasswordDto.getNewPassword());
     }
-
+    /**
+     * Изменение пароля.
+     */
     @Override
     public void changePassword(String oldPassword, String newPassword) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10);
@@ -137,8 +150,9 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
             userRepository.save(user);
         }
     }
-
-
+    /**
+     * Получение текущего пользователя.
+     */
     @Override
     public User getCurrentUser() throws UnauthorizedException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -149,7 +163,9 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
         return userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException(userDetails.getUsername()));
     }
-
+    /**
+     * Изменение аватара пользователя.
+     */
     @Override
     public void updateUserAvatar(MultipartFile image) throws IOException {
         User user = getCurrentUser();
@@ -165,7 +181,9 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
         Files.write(path, image.getBytes());
         userRepository.save(user);
     }
-
+    /**
+     * Удаление существующего аватара.
+     */
     @Override
     public void deleteExistingAvatar(User user) throws IOException {
         Path path = resolvePathToAvatar(user.getAvatar());
@@ -173,7 +191,9 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
             Files.delete(path);
         }
     }
-
+    /**
+     * Получение аватара из БД.
+     */
     @Override
     public byte[] getAvatarFromFs(String avatarId) throws IOException {
         Path path = resolvePathToAvatar(avatarId);
@@ -184,7 +204,9 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
         return Files.readAllBytes(path);
     }
 
-
+    /**
+     * Разрешение пути к аватару.
+     */
     private Path resolvePathToAvatar(String avatarId) {
         return Path.of(".", ApplicationConfig.getPathToAvatars()).resolve(avatarId);
     }

@@ -10,17 +10,24 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.skypro.homework.dto.LoginDto;
 import ru.skypro.homework.service.impl.LoginServiceImpl;
-
+/**
+ * Контроллер для работы с авторизацией пользователя.
+ */
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
 @Tag(name = "Авторизация")
 public class LoginController {
     private static final Logger log = LoggerFactory.getLogger(LoginController.class);
     private final LoginServiceImpl authenticationProvider;
+    /**
+     * Конструктор контроллера LoginController.
+     */
     public LoginController(LoginServiceImpl authenticationProvider) {
         this.authenticationProvider = authenticationProvider;
     }
-
+    /**
+     * Авторизация пользователя.
+     */
     @PostMapping("/login")
     @Operation(summary = "Авторизация пользователя")
     public void login(@RequestBody LoginDto loginDto) {

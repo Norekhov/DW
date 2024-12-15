@@ -4,7 +4,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import ru.skypro.homework.service.impl.CheckService;
 
 import java.util.Objects;
-
+/**
+ * DTO (Data Transfer Object) для регистрации пользователей.
+ * <p>
+ * В классе представлены данные для регистрации пользователей, а именно: логин, пароль, имя, фамилия и телефон пользователя,
+ * а также роль пользователя
+ * Также в классе реализованы конструкторы, геттеры, сеттеры, equals, hashCode и toString.
+ * </p>
+ */
 public class RegisterDto {
 
     @Schema(type = "string", description = "логин", minLength = 4, maxLength = 32)

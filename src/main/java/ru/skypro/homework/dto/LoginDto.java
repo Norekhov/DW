@@ -4,7 +4,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import ru.skypro.homework.service.impl.CheckService;
 
 import java.util.Objects;
-
+/**
+ * DTO (Data Transfer Object) для данных авторизации пользователя.
+ * <p>
+ * В классе представлены данные для авторизации пользователя, а именно: логин и пароль.
+ * Также в классе реализованы конструкторы, геттеры, сеттеры, equals, hashCode и toString.
+ * </p>
+ */
 public class LoginDto {
 
     @Schema(type = "string",

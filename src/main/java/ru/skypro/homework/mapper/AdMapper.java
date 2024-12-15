@@ -7,6 +7,9 @@ import ru.skypro.homework.dto.ExtendedAdDto;
 import ru.skypro.homework.model.Ad;
 import ru.skypro.homework.model.User;
 
+/**
+ * Класс для преобразования (маппинга) между сущностями и DTO - объявления.
+ */
 @Component
 public class AdMapper {
     public static AdDto toDto(Ad ad) {

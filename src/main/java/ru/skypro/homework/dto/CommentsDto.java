@@ -4,7 +4,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 import java.util.Objects;
-
+/**
+ * DTO (Data Transfer Object) для списка комментариев.
+ * <p>
+ * В классе представлены данные о списке комментариев, а именно: количество и сам список.
+ * Также в классе реализованы конструкторы, геттеры, сеттеры, equals, hashCode и toString.
+ * </p>
+ */
 public class CommentsDto {
 
     @Schema(type = "integer",

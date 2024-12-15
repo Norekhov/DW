@@ -4,7 +4,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import ru.skypro.homework.service.impl.CheckService;
 
 import java.util.Objects;
-
+/**
+ * DTO (Data Transfer Object) для создания нового пароля.
+ * <p>
+ * В классе представлены данные для создания нового пароля, а именно: текущий и новый пароли.
+ * Также в классе реализованы конструкторы, геттеры, сеттеры, equals, hashCode и toString.
+ * </p>
+ */
 public class NewPasswordDto {
 
     @Schema(type = "string",

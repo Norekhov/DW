@@ -6,7 +6,14 @@ import org.hibernate.annotations.ColumnDefault;
 import ru.skypro.homework.dto.Role;
 
 import java.util.Objects;
-
+/**
+ * Сущность для представления пользователя.
+ * <p>
+ * В классе представлены данные для сущности пользователя, а именно:
+ * уникальный идентификатор пользователя, его логин, имя, фамилия, телефон, роль, а также ссылка на аватар пользователя.
+ * Также в классе реализованы конструкторы, геттеры, сеттеры, equals, hashCode и toString.
+ * </p>
+ */
 @Entity
 @Table(name = "users")
 @Transactional

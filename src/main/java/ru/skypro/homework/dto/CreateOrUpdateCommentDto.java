@@ -5,6 +5,12 @@ import ru.skypro.homework.service.impl.CheckService;
 
 import java.util.Objects;
 
+/**
+ * DTO (Data Transfer Object) для создания или обновления комментария.
+ * <p>
+ * В классе представлены данные для создания или обновления комментария, а именно: текст комментария.
+ * </p>
+ */
 public class CreateOrUpdateCommentDto {
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED,

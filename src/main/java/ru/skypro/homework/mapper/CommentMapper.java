@@ -5,7 +5,9 @@ import ru.skypro.homework.dto.CreateOrUpdateCommentDto;
 import ru.skypro.homework.model.Ad;
 import ru.skypro.homework.model.Comment;
 import ru.skypro.homework.model.User;
-
+/**
+ * Класс для преобразования (маппинга) между сущностями и DTO - комментарии.
+ */
 public class CommentMapper {
     public static CommentDto toDto(Comment comment) {
         CommentDto commentDto = new CommentDto();

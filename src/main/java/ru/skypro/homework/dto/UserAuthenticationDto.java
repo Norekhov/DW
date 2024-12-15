@@ -8,7 +8,11 @@ import java.util.Collection;
 import java.util.Collections;
 
 /**
- *
+ * DTO (Data Transfer Object) для аутентификации пользователя.
+ * <p>
+ * В классе представлены данные для аутентификации пользователя, а именно: логин, пароль, роль и номер телефона.
+ * Также в классе реализованы конструкторы, геттеры, сеттеры, equals, hashCode и toString.
+ * </p>
  */
 public class UserAuthenticationDto implements UserDetails {
     private String username;

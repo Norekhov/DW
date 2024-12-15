@@ -8,7 +8,9 @@ import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.model.User;
 
 import java.io.IOException;
-
+/**
+ * Интерефейс для сервиса пользователя.
+ */
 public interface CustomUserDetailsManager extends UserDetailsManager {
     void updateUser(User user);
 

@@ -3,7 +3,14 @@ package ru.skypro.homework.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Objects;
-
+/**
+ * DTO (Data Transfer Object) для комментария.
+ * <p>
+ * В классе представлены данные о комментарии, а именно: уникальный идентификатор автора, ссылка на аватар автора,
+ * имя автора комментария, дата и время создания комментария, уникальный идентификатор комментария и текстовка.
+ * Также в классе реализованы конструкторы, геттеры, сеттеры, equals, hashCode и toString.
+ * </p>
+ */
 public class CommentDto {
 
     @Schema(type = "integer",

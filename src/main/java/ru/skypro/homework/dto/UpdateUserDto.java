@@ -3,7 +3,13 @@ package ru.skypro.homework.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Objects;
-
+/**
+ * DTO (Data Transfer Object) для обновления информации о пользователе.
+ * <p>
+ * В классе представлены данные для обновления информации о пользователе, а именно: имя, фамилия и телефон.
+ * Также в классе реализованы конструкторы, геттеры, сеттеры, equals, hashCode и toString.
+ * </p>
+ */
 public class UpdateUserDto {
     @Schema(type = "string", description = "имя пользователя", minLength = 3, maxLength = 10)
     private String firstName;
