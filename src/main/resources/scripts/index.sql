@@ -35,7 +35,7 @@ alter table users
 
 create table if not exists ad
 (
-    ad_pk     integer not null
+    ad_id     integer not null
         primary key,
     price     integer,
     user_id   integer
@@ -51,10 +51,10 @@ alter table ad
 
 create table if not exists comment
 (
-    ad_pk      integer
+    ad_id      integer
         constraint fkc5at2qnh29gd8s96s19qc63wu
             references ad,
-    comment_pk integer not null
+    comment_id integer not null
         primary key,
     user_id    integer
         constraint fkqm52p1v3o13hy268he0wcngr5

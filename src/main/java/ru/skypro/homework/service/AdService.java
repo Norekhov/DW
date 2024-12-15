@@ -15,7 +15,7 @@ public interface AdService {
 
     AdDto addAd(MultipartFile image, CreateOrUpdateAdDto ad);
 
-    void saveAdImage(MultipartFile image, String adImageUrl) throws IOException;
+    void saveAdImage(MultipartFile image, Ad ad);
 
     ExtendedAdDto getAdById(Integer id);
 

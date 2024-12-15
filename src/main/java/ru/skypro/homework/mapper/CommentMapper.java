@@ -9,7 +9,7 @@ import ru.skypro.homework.model.User;
 public class CommentMapper {
     public static CommentDto toDto(Comment comment) {
         CommentDto commentDto = new CommentDto();
-        commentDto.setPk(comment.getPk());
+        commentDto.setPk(comment.getId());
         commentDto.setText(comment.getText());
         commentDto.setAuthor(comment.getUser().getId());
         commentDto.setCreatedAt(comment.getCreatedAt());
@@ -18,7 +18,7 @@ public class CommentMapper {
 
     public static Comment toComment(CreateOrUpdateCommentDto createOrUpdateCommentDto, User user, Long time, Ad ad) {
         Comment comment = new Comment();
-        comment.setPk(null);
+        comment.setId(null);
         comment.setText(createOrUpdateCommentDto.getText());
         comment.setAd(ad);
         comment.setCreatedAt(time);

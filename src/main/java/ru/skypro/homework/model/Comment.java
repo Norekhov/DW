@@ -12,8 +12,8 @@ public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "comment_pk")
-    private Integer pk;
+    @Column(name = "comment_id")
+    private Integer id;
 
     private String text;
 
@@ -25,13 +25,13 @@ public class Comment {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ad_pk")
+    @JoinColumn(name = "ad_id")
     private Ad ad;
 
     @Override
     public String toString() {
         return "Comment{" +
-                "pk=" + pk +
+                "pk=" + id +
                 ", text='" + text + '\'' +
                 ", createdAt=" + createdAt +
                 '}';
@@ -42,20 +42,20 @@ public class Comment {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Comment comment = (Comment) o;
-        return Objects.equals(pk, comment.pk) && Objects.equals(text, comment.text) && Objects.equals(createdAt, comment.createdAt) && Objects.equals(user, comment.user) && Objects.equals(ad, comment.ad);
+        return Objects.equals(id, comment.id) && Objects.equals(text, comment.text) && Objects.equals(createdAt, comment.createdAt) && Objects.equals(user, comment.user) && Objects.equals(ad, comment.ad);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pk, text, createdAt, user, ad);
+        return Objects.hash(id, text, createdAt, user, ad);
     }
 
-    public Integer getPk() {
-        return pk;
+    public Integer getId() {
+        return id;
     }
 
-    public void setPk(Integer pk) {
-        this.pk = pk;
+    public void setId(Integer pk) {
+        this.id = pk;
     }
 
     public String getText() {
