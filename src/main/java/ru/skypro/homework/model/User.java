@@ -1,6 +1,7 @@
 package ru.skypro.homework.model;
 
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import org.hibernate.annotations.ColumnDefault;
 import ru.skypro.homework.dto.Role;
 
@@ -8,9 +9,11 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "users")
+@Transactional
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "user_id")
     private Integer id;
 
     private String username;

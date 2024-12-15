@@ -10,6 +10,7 @@ import ru.skypro.homework.dto.*;
 import ru.skypro.homework.exception.AdImageException;
 import ru.skypro.homework.exception.EntityNotFoundException;
 import ru.skypro.homework.exception.ForbiddenException;
+import ru.skypro.homework.exception.UnauthorizedException;
 import ru.skypro.homework.mapper.AdMapper;
 import ru.skypro.homework.model.Ad;
 import ru.skypro.homework.model.User;
@@ -40,11 +41,6 @@ public class AdServiceImpl implements AdService {
         this.userService = userService;
         this.adRepository = adRepository;
         this.commentRepository = commentRepository;
-    }
-
-    @Override
-    public void removeAdImage(String adImageUrl) {
-        AdService.super.removeAdImage(adImageUrl);
     }
 
     @Override
@@ -87,12 +83,12 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
-    public ExtendedAdDto getAdById(Integer id) {
+    public ExtendedAdDto getAdById(Integer id) throws AdImageException{
         return adRepository.findById(id).map(AdMapper::toExtendedAdDto).orElseThrow(() -> new AdImageException("Изображение не найдено"));
     }
 
     @Override
-    public AdListDto getUserAds() {
+    public AdListDto getUserAds() throws UnauthorizedException {
         Integer id = userService.getCurrentUser().getId();
         List<Ad> ads = adRepository.findByUserId(id);
         return new AdListDto(ads.size(), ads.stream().map(AdMapper::toDto).collect(Collectors.toList()));
@@ -105,7 +101,9 @@ public class AdServiceImpl implements AdService {
             throw new ForbiddenException("Попытка изменить чужое объявление");
         }
         updatedAd.setTitle(ad.getTitle());
-        updatedAd.setAdText(ad.getDescription());
+        if (ad.getDescription()!=null) {
+            updatedAd.setAdText(ad.getDescription());
+        }
         updatedAd.setPrice(ad.getPrice());
 
         return AdMapper.toDto(adRepository.save(updatedAd));
@@ -124,6 +122,15 @@ public class AdServiceImpl implements AdService {
         adRepository.deleteById(adId);
     }
 
+    @Override
+    public void removeAdImage(String adImageUrl) {
+        Path path = Path.of(".", adImageUrl);
+        try {
+            Files.delete(path);
+        } catch (IOException e) {
+            log.warn("Не удаётся удалить изображение объявления {}", path);
+        }
+    }
     @Override
     public byte[] updateAdImage(Integer adId, MultipartFile image) throws IOException, ForbiddenException {
         Ad ad = adRepository.findById(adId).orElseThrow(() -> new EntityNotFoundException("Попытка обновить изображение для несуществующего объявления" + adId));

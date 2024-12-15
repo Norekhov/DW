@@ -1,6 +1,8 @@
 package ru.skypro.homework.mapper;
 
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.skypro.homework.config.ApplicationConfig;
 import ru.skypro.homework.dto.RegisterDto;
 import ru.skypro.homework.dto.Role;
@@ -9,6 +11,8 @@ import ru.skypro.homework.dto.UserAuthenticationDto;
 import ru.skypro.homework.model.User;
 
 public class UserMapper {
+
+    private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
     public static UserApiDto toApi(User user) {
         UserApiDto userApiDto = new UserApiDto();
         userApiDto.setId(user.getId());
@@ -26,13 +30,14 @@ public class UserMapper {
     public static UserDetails toUserDetails(User user) {
         return new UserAuthenticationDto(user.getUsername(), user.getPassword(), user.getRole(), user.isEnabled());
     }
-
     public static UserDetails toUserDetails(RegisterDto user) {
         return new UserAuthenticationDto(user.getUsername(), user.getPassword(), user.getRole(), 1);
     }
 
-    public static User toUser(RegisterDto registerDto) {
-        return new User(null, registerDto.getUsername(), registerDto.getFirstName(), registerDto.getLastName(), registerDto.getPhone(), registerDto.getRole(), registerDto.getPassword(), 1, null);
+    public static User toEncodedUser(RegisterDto registerDto) {
+
+        return new User(null, registerDto.getUsername(), registerDto.getFirstName(), registerDto.getLastName(), registerDto.getPhone(), registerDto.getRole()
+                , passwordEncoder.encode(registerDto.getPassword()), 1, null);
     }
 
     public static User toUser(UserDetails user) {

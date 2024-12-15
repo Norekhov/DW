@@ -1,46 +1,67 @@
 -- liquibase formated sql
 -- changeset norekhov:1
-CREATE TABLE users
+create sequence ad_seq
+    increment by 50;
+
+alter sequence ad_seq owner to "user";
+
+create sequence comment_seq
+    increment by 50;
+
+alter sequence comment_seq owner to "user";
+
+create sequence users_seq
+    increment by 50;
+
+alter sequence users_seq owner to "user";
+
+create table if not exists users
 (
-    id         INT          NOT NULL PRIMARY KEY,
-    email      VARCHAR(255) NOT NULL UNIQUE,
-    first_name VARCHAR(255) NOT NULL,
-    last_name  VARCHAR(255) NOT NULL,
-    phone      VARCHAR(255) NOT NULL UNIQUE,
-    role       VARCHAR(255) NOT NULL,
-    password   VARCHAR(255) NOT NULL
+    enabled    integer,
+    user_id    integer not null primary key,
+    avatar     varchar(255),
+    first_name varchar(255),
+    last_name  varchar(255),
+    password   varchar(255),
+    phone      varchar(255),
+    role       varchar(255) default USER
+        constraint users_role_check
+            check ((role)::text = ANY ((ARRAY ['USER'::character varying, 'ADMIN'::character varying])::text[])),
+    username   varchar(255)
 );
-CREATE TABLE ad
+
+alter table users
+    owner to "user";
+
+create table if not exists ad
 (
-    pk      INT          NOT NULL PRIMARY KEY,
-    price   INT          NOT NULL,
-    title   VARCHAR(255) NOT NULL,
-    adText  TEXT         NOT NULL,
-    user_id INT REFERENCES user (id)
+    ad_pk     integer not null
+        primary key,
+    price     integer,
+    user_id   integer
+        constraint fktofr7l4mo2aajd4mm1k7n93a6
+            references users,
+    ad_text   varchar(255),
+    image_url varchar(255),
+    title     varchar(255)
 );
-CREATE TABLE comment
+
+alter table ad
+    owner to "user";
+
+create table if not exists comment
 (
-    pk        INT    NOT NULL PRIMARY KEY,
-    text      TEXT   NOT NULL,
-    createdAt BIGINT NOT NULL,
-    user_id   INT REFERENCES user (id),
-    ad_id     INT REFERENCES ad (pk)
+    ad_pk      integer
+        constraint fkc5at2qnh29gd8s96s19qc63wu
+            references ad,
+    comment_pk integer not null
+        primary key,
+    user_id    integer
+        constraint fkqm52p1v3o13hy268he0wcngr5
+            references users,
+    created_at bigint,
+    text       varchar(255)
 );
-CREATE TABLE userAvatar
-(
-    id        INT          NOT NULL PRIMARY KEY,
-    filePath  VARCHAR(255) NOT NULL,
-    fileSize  BIGINT       NOT NULL,
-    mediaType VARCHAR(255) NOT NULL,
-    data      BYTEA        NOT NULL,
-    userZ_id  INT REFERENCES user (id)
-);
-CREATE TABLE adImage
-(
-    id        INT          NOT NULL PRIMARY KEY,
-    filePath  VARCHAR(255) NOT NULL,
-    fileSize  BIGINT       NOT NULL,
-    mediaType VARCHAR(255) NOT NULL,
-    data      BYTEA        NOT NULL,
-    ad_id     INT REFERENCES ad (pk)
-);
+
+alter table comment
+    owner to "user";

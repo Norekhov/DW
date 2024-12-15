@@ -1,7 +1,9 @@
 package ru.skypro.homework.controller;
 
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,37 +11,35 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import ru.skypro.homework.dto.*;
-import ru.skypro.homework.mapper.AdMapper;
 import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AdService;
-import ru.skypro.homework.service.impl.CustomUserDetailsManagerImpl;
+import ru.skypro.homework.service.CommentService;
+import ru.skypro.homework.service.CustomUserDetailsManager;
 
 import java.net.URI;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_CLASS;
 import static ru.skypro.homework.constant.StaticForTests.*;
 
 @Sql(scripts = {"classpath:schema.sql", "classpath:test-data.sql"}, executionPhase = BEFORE_TEST_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @EnableTransactionManagement
-class AdControllerTest {
+class CommentControllerTest {
 
     @LocalServerPort
     int port;
-    String baseUrl;
 
+    String baseUrl;
     @Autowired
     TestRestTemplate restTemplate;
 
@@ -47,19 +47,10 @@ class AdControllerTest {
     AdService adService;
 
     @MockitoSpyBean
-    AdRepository adRepository;
+    private CommentController commentController;
 
     @MockitoSpyBean
-    UserRepository userRepository;
-
-    @Autowired
-    private CustomUserDetailsManagerImpl customUserDetailsManagerImpl;
-
-    @Autowired
-    private UserController userController;
-
-    @MockitoSpyBean
-    private AdController adController;
+    private CommentService commentService;
     @Autowired
     private CommentRepository commentRepository;
 
@@ -68,16 +59,44 @@ class AdControllerTest {
         baseUrl = "http://localhost:" + port + "/";
     }
 
-    @AfterEach
-    void cleanDB() {
-//        commentRepository.deleteAll();
-//        adRepository.deleteAll();
-//        userRepository.deleteAll();
+    @Test
+    @Transactional ////решает LazyInitializationException из-за lazy связи с users
+    void addComment() {
+        System.out.println(commentRepository.findAll());
+        CommentDto comment = new CommentDto();
+        comment.setAuthor(USER_USER1_ID);
+        comment.setText(TEST_COMMENT_TEXT);
+        ResponseEntity<CommentDto> response = restTemplate
+                .withBasicAuth(USER_USER1_EMAIL, USER_USER1_PASSWORD)
+                .postForEntity(baseUrl + "ads/1/comments", comment, CommentDto.class);
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(comment.getText(), response.getBody().getText());
+        Mockito.verify(commentController, Mockito.times(1)).addComment(Mockito.any(), Mockito.any());
+        Mockito.verify(commentService, Mockito.times(1)).addComment(Mockito.any(), Mockito.any());
+
+    }
+
+    @Test
+    void getComments() {
+        ResponseEntity<ExtendedAdDto> response = restTemplate
+                .withBasicAuth(USER_ADMIN_EMAIL, USER_ADMIN_PASSWORD)
+                .getForEntity(baseUrl + "ads/1/comments", ExtendedAdDto.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        Mockito.verify(commentController, Mockito.times(1)).getComments(1);
+        Mockito.verify(commentService, Mockito.times(1)).getCommentsForAd(1);
+
+    }
+
+    @Test
+    void updateComment() {
+    }
+
+    @Test
+    void deleteComment() {
     }
 
 
     @Test
-    @Order(1)
     void addAd() {
         CreateOrUpdateAdDto properties = new CreateOrUpdateAdDto();
         properties.setTitle("testTitle");
@@ -89,10 +108,10 @@ class AdControllerTest {
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("properties", properties);
         body.add("image", new FileSystemResource(IMAGE_JPG_PATH_STRING));
-        RequestEntity<MultiValueMap<String, Object>> request = new RequestEntity<>(body, headers, HttpMethod.POST, URI.create(baseUrl + "ads"));
+
+        RequestEntity<MultiValueMap<String, Object>> request = new RequestEntity<>(body, headers, HttpMethod.POST, URI.create("http://localhost:" + port + "/ads"));
         ResponseEntity<AdDto> response = restTemplate.withBasicAuth(USER_ADMIN_EMAIL, USER_ADMIN_PASSWORD).exchange(request, AdDto.class);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        Mockito.verify(adService, Mockito.times(1)).addAd(Mockito.any(), Mockito.any());
     }
 
     @Test
@@ -101,39 +120,41 @@ class AdControllerTest {
         properties.setTitle("testTitle");
         properties.setDescription("testDescription");
         properties.setPrice(1000);
-        restTemplate.postForLocation(baseUrl + "login", new LoginDto(USER_ADMIN_PASSWORD, USER_ADMIN_EMAIL));
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("properties", properties);
         body.add("image", new FileSystemResource(IMAGE_JPG_PATH_STRING));
 
-        RequestEntity<MultiValueMap<String, Object>> request = new RequestEntity<>(body, headers, HttpMethod.POST, URI.create(baseUrl + "ads"));
+        RequestEntity<MultiValueMap<String, Object>> request = new RequestEntity<>(body, headers, HttpMethod.POST, URI.create("http://localhost:" + port + "/ads"));
         ResponseEntity<AdDto> response = restTemplate.withBasicAuth(USER_ADMIN_EMAIL, "p@55w0rd").exchange(request, AdDto.class);
 
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     }
 
     @Test
-    @Order(2)
-    @Transactional ////решает LazyInitializationException из-за lazy связи с users
     void getAllAds() {
-        ResponseEntity<AdListDto> response = restTemplate.getForEntity(baseUrl + "ads", AdListDto.class);
-        System.out.println("================"+adRepository.findAll());
+        ResponseEntity<AdListDto> response = restTemplate.getForEntity("http://localhost:" + port + "/ads", AdListDto.class);
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(9, response.getBody().getCount());
+        assertEquals(11, response.getBody().getCount());
         Mockito.verify(adService, Mockito.times(1)).getAllAds();
     }
 
     @Test
     void getAdUnauthorized() {
+        addAd();
+
         ResponseEntity<ExtendedAdDto> response = restTemplate.withBasicAuth(USER_ADMIN_EMAIL, "WRONGPassword").getForEntity(baseUrl + "ads/" + 1, ExtendedAdDto.class);
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     }
 
     @Test
     void getUserAds() {
+        addAd();
+
         ResponseEntity<ExtendedAdDto> response = restTemplate.withBasicAuth(USER_ADMIN_EMAIL, USER_ADMIN_PASSWORD).getForEntity(baseUrl + "ads/me", ExtendedAdDto.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         Mockito.verify(adService, Mockito.times(1)).getUserAds();
@@ -141,51 +162,22 @@ class AdControllerTest {
 
     @Test
     void getAdById() {
+        addAd();
         ResponseEntity<ExtendedAdDto> response = restTemplate.withBasicAuth(USER_ADMIN_EMAIL, USER_ADMIN_PASSWORD).getForEntity(baseUrl + "ads/" + 1, ExtendedAdDto.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         Mockito.verify(adService, Mockito.times(1)).getAdById(1);
+
     }
 
     @Test
-    @Transactional ////решает LazyInitializationException из-за lazy связи с users
     void updateAd() {
-        int id1=2;
-        System.out.println("================"+adRepository.findAll());
-        AdDto ad1 = AdMapper.toDto(adRepository.findById(id1).orElseThrow());
-        int oldPrice = ad1.getPrice();
-        ad1.setPrice(oldPrice + 1);
-        restTemplate.withBasicAuth(USER_ADMIN_EMAIL, USER_ADMIN_PASSWORD).patchForObject(baseUrl + "ads/"+id1, ad1, AdDto.class);
-        Mockito.verify(adController, Mockito.times(1)).updateAd(Mockito.any(), Mockito.any());
-        Mockito.verify(adService, Mockito.times(1)).updateAd(Mockito.any(), Mockito.any());
-        assertEquals(oldPrice + 1, ad1.getPrice());
-
-        //Попытка поменять чужое объявление
-        int id2=5;
-        AdDto ad2 = AdMapper.toDto(adRepository.findById(id2).orElseThrow());
-        int oldPrice2 = ad2.getPrice();
-        ad2.setPrice(oldPrice2 + 1);
-        restTemplate.withBasicAuth(USER_USER1_EMAIL, USER_USER1_PASSWORD).patchForObject(baseUrl + "ads/"+id2, ad1, AdDto.class);
-        assertEquals(oldPrice2, adRepository.findById(id2).orElseThrow().getPrice());
     }
 
     @Test
     void removeAd() {
-        //удалям своё объявление
-        restTemplate.withBasicAuth(USER_ADMIN_EMAIL, USER_ADMIN_PASSWORD).delete(baseUrl + "ads/" + 1);
-        Mockito.verify(adService, Mockito.times(1)).removeAd(1);
-        //удаляем админом объявление пользователя
-        restTemplate.withBasicAuth(USER_ADMIN_EMAIL, USER_ADMIN_PASSWORD).delete(baseUrl + "ads/" + 4);
-        Mockito.verify(adService, Mockito.times(1)).removeAd(4);
-        //удаляем чужое объявление
-        restTemplate.withBasicAuth(USER_USER1_EMAIL, USER_USER1_PASSWORD).delete(baseUrl + "ads/" + 2);
-        Mockito.verify(adService, Mockito.times(1)).removeAd(2);
-        //удаляем уже удалённое объявление
-        restTemplate.withBasicAuth(USER_USER1_EMAIL, USER_USER1_PASSWORD).delete(baseUrl + "ads/" + 1);
-        assertEquals(7,adRepository.findAll().size(),"В базе данных осталось 2 объявления из 4");
     }
 
     @Test
     void updateAdImage() {
-
     }
 }
