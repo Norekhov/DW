@@ -2,14 +2,11 @@ package ru.skypro.homework.service;
 
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.*;
-import ru.skypro.homework.exception.AdImageException;
 import ru.skypro.homework.exception.EntityNotFoundException;
 import ru.skypro.homework.exception.ForbiddenException;
 import ru.skypro.homework.model.Ad;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 public interface AdService {
     void removeAdImage(String adImageUrl);

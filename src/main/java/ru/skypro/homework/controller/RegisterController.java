@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.skypro.homework.dto.RegisterDto;
 import ru.skypro.homework.exception.UserAlreadyExistsException;
-import ru.skypro.homework.mapper.UserMapper;
 import ru.skypro.homework.service.CustomUserDetailsManager;
 
 @CrossOrigin(value = "http://localhost:3000")

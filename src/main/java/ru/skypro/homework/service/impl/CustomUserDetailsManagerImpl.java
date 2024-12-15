@@ -149,8 +149,8 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
             throw new UnauthorizedException("Пользователь не авторизован");
         }
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException(userDetails.getUsername()));
-        return user;
+        return userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException(userDetails.getUsername()));
     }
 
     @Override

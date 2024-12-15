@@ -1,7 +1,6 @@
 package ru.skypro.homework.controller;
 
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -17,14 +16,12 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import ru.skypro.homework.dto.*;
-import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.repository.CommentRepository;
-import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AdService;
 import ru.skypro.homework.service.CommentService;
-import ru.skypro.homework.service.CustomUserDetailsManager;
 
 import java.net.URI;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -70,7 +67,7 @@ class CommentControllerTest {
                 .withBasicAuth(USER_USER1_EMAIL, USER_USER1_PASSWORD)
                 .postForEntity(baseUrl + "ads/1/comments", comment, CommentDto.class);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals(comment.getText(), response.getBody().getText());
+        assertEquals(comment.getText(), Objects.requireNonNull(response.getBody()).getText());
         Mockito.verify(commentController, Mockito.times(1)).addComment(Mockito.any(), Mockito.any());
         Mockito.verify(commentService, Mockito.times(1)).addComment(Mockito.any(), Mockito.any());
 

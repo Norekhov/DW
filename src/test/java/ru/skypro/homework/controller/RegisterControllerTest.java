@@ -10,18 +10,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
-import org.springframework.test.context.jdbc.Sql;
-import ru.skypro.homework.dto.LoginDto;
 import ru.skypro.homework.dto.RegisterDto;
 import ru.skypro.homework.model.User;
-import ru.skypro.homework.repository.AdRepository;
-import ru.skypro.homework.repository.CommentRepository;
 import ru.skypro.homework.repository.UserRepository;
-import ru.skypro.homework.service.AdService;
 import ru.skypro.homework.service.CustomUserDetailsManager;
-import ru.skypro.homework.service.impl.CustomUserDetailsManagerImpl;
 
-import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_CLASS;
 import static ru.skypro.homework.constant.StaticForTests.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

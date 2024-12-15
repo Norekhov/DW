@@ -9,8 +9,6 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -67,14 +65,6 @@ class AdControllerTest {
     void init() {
         baseUrl = "http://localhost:" + port + "/";
     }
-
-    @AfterEach
-    void cleanDB() {
-//        commentRepository.deleteAll();
-//        adRepository.deleteAll();
-//        userRepository.deleteAll();
-    }
-
 
     @Test
     @Order(1)
