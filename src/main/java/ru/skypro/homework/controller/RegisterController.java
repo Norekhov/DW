@@ -31,7 +31,7 @@ public class RegisterController {
     @Operation(summary = "Регистрация пользователя")
     public ResponseEntity<?> register(@RequestBody RegisterDto registerDto) {
         try {
-            userService.createUser(UserMapper.toUserDetails(registerDto));
+            userService.createUser(registerDto);
         } catch (UserAlreadyExistsException e) {
             log.info(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);

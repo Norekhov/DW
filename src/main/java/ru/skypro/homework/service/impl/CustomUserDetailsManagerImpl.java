@@ -2,7 +2,6 @@ package ru.skypro.homework.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +13,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.config.ApplicationConfig;
 import ru.skypro.homework.dto.NewPasswordDto;
+import ru.skypro.homework.dto.RegisterDto;
 import ru.skypro.homework.dto.UpdateUserDto;
 import ru.skypro.homework.exception.UnauthorizedException;
 import ru.skypro.homework.exception.UserAlreadyExistsException;
@@ -77,9 +77,21 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
         if (userExists(user.getUsername())) {
             throw new UserAlreadyExistsException(user.getUsername());
         }
-        UserDetails userDetails = org.springframework.security.core.userdetails.User.builder().passwordEncoder(passwordEncoder::encode).password(user.getPassword()).username(user.getUsername()).roles(user.getAuthorities().toString()).build();
-        userRepository.save(UserMapper.toUser(userDetails));
+        UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
+                .passwordEncoder(passwordEncoder::encode).password(passwordEncoder.encode(user.getPassword()))
+                .username(user.getUsername()).roles(user.getAuthorities().toString()).build();
+        userRepository.save(UserMapper.toUser(user));
     }
+
+    @Override
+    public void createUser(RegisterDto user) {
+        if (userExists(user.getUsername())) {
+            throw new UserAlreadyExistsException(user.getUsername());
+        }
+        User userEncoded = UserMapper.toEncodedUser(user);
+        userRepository.save(userEncoded);
+    }
+
 
     @Override
     public void updateUser(UserDetails user) {
@@ -174,6 +186,7 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
         }
         return Files.readAllBytes(path);
     }
+
 
     private Path resolvePathToAvatar(String avatarId) {
         return Path.of(".", ApplicationConfig.getPathToAvatars()).resolve(avatarId);

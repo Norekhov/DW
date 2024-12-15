@@ -44,11 +44,6 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
-    public void removeAdImage(String adImageUrl) {
-        AdService.super.removeAdImage(adImageUrl);
-    }
-
-    @Override
     public AdListDto getAllAds() {
         List<Ad> ads = adRepository.findAll();
         return new AdListDto(ads.size(), ads.stream().map(AdMapper::toDto).collect(Collectors.toList()));
@@ -106,7 +101,9 @@ public class AdServiceImpl implements AdService {
             throw new ForbiddenException("Попытка изменить чужое объявление");
         }
         updatedAd.setTitle(ad.getTitle());
-        updatedAd.setAdText(ad.getDescription());
+        if (ad.getDescription()!=null) {
+            updatedAd.setAdText(ad.getDescription());
+        }
         updatedAd.setPrice(ad.getPrice());
 
         return AdMapper.toDto(adRepository.save(updatedAd));
@@ -125,6 +122,15 @@ public class AdServiceImpl implements AdService {
         adRepository.deleteById(adId);
     }
 
+    @Override
+    public void removeAdImage(String adImageUrl) {
+        Path path = Path.of(".", adImageUrl);
+        try {
+            Files.delete(path);
+        } catch (IOException e) {
+            log.warn("Не удаётся удалить изображение объявления {}", path);
+        }
+    }
     @Override
     public byte[] updateAdImage(Integer adId, MultipartFile image) throws IOException, ForbiddenException {
         Ad ad = adRepository.findById(adId).orElseThrow(() -> new EntityNotFoundException("Попытка обновить изображение для несуществующего объявления" + adId));

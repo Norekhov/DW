@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.AdDto;
@@ -15,6 +17,7 @@ import ru.skypro.homework.dto.CreateOrUpdateAdDto;
 import ru.skypro.homework.dto.ExtendedAdDto;
 import ru.skypro.homework.exception.AdImageException;
 import ru.skypro.homework.exception.EntityNotFoundException;
+import ru.skypro.homework.exception.ForbiddenException;
 import ru.skypro.homework.service.AdService;
 
 import java.io.IOException;
@@ -34,7 +37,6 @@ public class AdController {
     @GetMapping
     @Operation(summary = "Получение всех объявлений")
     public AdListDto getAllAds() {
-        log.info("Получение всех объявлений");
         return adService.getAllAds();
     }
 
@@ -54,21 +56,27 @@ public class AdController {
 
     @PatchMapping("/{id}")
     @Operation(summary = "Обновление информации об объявлении")
-    public AdDto updateAd(@PathVariable Integer id, @RequestBody CreateOrUpdateAdDto ad) {
+    public ResponseEntity<AdDto> updateAd(@PathVariable Integer id, @RequestBody CreateOrUpdateAdDto ad) {
         log.info("Обновление информации об объявлении {}", ad.getTitle());
-        return adService.updateAd(id, ad);
+        AdDto adDto;
+        try {
+            adDto = adService.updateAd(id, ad);
+        } catch (ForbiddenException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(adDto);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Удаление объявления")
-    public ResponseEntity<?> removeAd(@PathVariable Integer id) {
-        log.info("Удаление объявления {}", id);
+    public ResponseEntity<?> removeAd(@PathVariable Integer id, Authentication auth) {
+        log.info("Пользователь {} удаляет объявления {}", ((UserDetails) auth.getPrincipal()).getUsername(), id);
         HttpStatus httpStatus = HttpStatus.OK;
         try {
             adService.removeAd(id);
         } catch (EntityNotFoundException e) {
             httpStatus = HttpStatus.NOT_FOUND;
-        } catch (Exception e) {
+        } catch (ForbiddenException e) {
             httpStatus = HttpStatus.FORBIDDEN;
         }
         return ResponseEntity.status(httpStatus).body(httpStatus.getReasonPhrase());

@@ -1,15 +1,18 @@
 package ru.skypro.homework.model;
 
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 
 import java.util.Objects;
 
 @Entity
 @Table(name = "ad")
+@Transactional
 public class Ad {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "ad_pk")
     private Integer pk;
 
     private Integer price;
