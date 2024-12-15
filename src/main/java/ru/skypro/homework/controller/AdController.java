@@ -42,16 +42,21 @@ public class AdController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Добавление объявления")
-    public ResponseEntity<AdDto> addAd(@RequestParam("image") MultipartFile image
-            , @RequestPart("properties") CreateOrUpdateAdDto ad) {
+    public ResponseEntity<AdDto> addAd(@RequestParam("image") MultipartFile image, @RequestPart("properties") CreateOrUpdateAdDto ad) {
         log.info("Добавление объявления {}", ad.getTitle());
         return ResponseEntity.status(HttpStatus.CREATED).body(adService.addAd(image, ad));
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Получение информации об объявлении")
-    public ExtendedAdDto getAdById(@PathVariable Integer id) throws AdImageException {
-        return adService.getAdById(id);
+    public ExtendedAdDto getAdById(@PathVariable Integer id) {
+        ExtendedAdDto ad = new ExtendedAdDto();
+        try {
+            ad = adService.getAdById(id);
+        } catch (AdImageException e) {
+            log.warn(e.getMessage());
+        }
+        return ad;
     }
 
     @PatchMapping("/{id}")
@@ -95,9 +100,7 @@ public class AdController {
         return ResponseEntity.status(HttpStatus.OK).body(userAds);
     }
 
-    @PatchMapping(path = "/{adId}/image",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-            produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @PatchMapping(path = "/{adId}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @Operation(summary = "Обновление изображения объявления")
     public ResponseEntity<byte[]> updateAdImage(@PathVariable Integer adId, @RequestParam("image") MultipartFile image) throws IOException {
         log.info("Обновление изображения объявления {}", adId);

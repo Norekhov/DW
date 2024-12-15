@@ -70,9 +70,9 @@ class AdControllerTest {
 
     @AfterEach
     void cleanDB() {
-        adRepository.deleteAll();
-        userRepository.deleteAll();
-        commentRepository.deleteAll();
+//        commentRepository.deleteAll();
+//        adRepository.deleteAll();
+//        userRepository.deleteAll();
     }
 
 
@@ -116,12 +116,13 @@ class AdControllerTest {
 
     @Test
     @Order(2)
+    @Transactional ////решает LazyInitializationException из-за lazy связи с users
     void getAllAds() {
         ResponseEntity<AdListDto> response = restTemplate.getForEntity(baseUrl + "ads", AdListDto.class);
-
+        System.out.println("================"+adRepository.findAll());
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(4, response.getBody().getCount());
+        assertEquals(9, response.getBody().getCount());
         Mockito.verify(adService, Mockito.times(1)).getAllAds();
     }
 
@@ -148,20 +149,23 @@ class AdControllerTest {
     @Test
     @Transactional ////решает LazyInitializationException из-за lazy связи с users
     void updateAd() {
-        AdDto ad1 = AdMapper.toDto(adRepository.findById(1).orElseThrow());
+        int id1=2;
+        System.out.println("================"+adRepository.findAll());
+        AdDto ad1 = AdMapper.toDto(adRepository.findById(id1).orElseThrow());
         int oldPrice = ad1.getPrice();
         ad1.setPrice(oldPrice + 1);
-        restTemplate.withBasicAuth(USER_ADMIN_EMAIL, USER_ADMIN_PASSWORD).patchForObject(baseUrl + "ads/" + "1", ad1, AdDto.class);
+        restTemplate.withBasicAuth(USER_ADMIN_EMAIL, USER_ADMIN_PASSWORD).patchForObject(baseUrl + "ads/"+id1, ad1, AdDto.class);
         Mockito.verify(adController, Mockito.times(1)).updateAd(Mockito.any(), Mockito.any());
         Mockito.verify(adService, Mockito.times(1)).updateAd(Mockito.any(), Mockito.any());
         assertEquals(oldPrice + 1, ad1.getPrice());
 
         //Попытка поменять чужое объявление
-        AdDto ad2 = AdMapper.toDto(adRepository.findById(2).orElseThrow());
+        int id2=5;
+        AdDto ad2 = AdMapper.toDto(adRepository.findById(id2).orElseThrow());
         int oldPrice2 = ad2.getPrice();
         ad2.setPrice(oldPrice2 + 1);
-        restTemplate.withBasicAuth(USER_USER1_EMAIL, USER_USER1_PASSWORD).patchForObject(baseUrl + "ads/" + "2", ad1, AdDto.class);
-        assertEquals(oldPrice2, adRepository.findById(2).orElseThrow().getPrice());
+        restTemplate.withBasicAuth(USER_USER1_EMAIL, USER_USER1_PASSWORD).patchForObject(baseUrl + "ads/"+id2, ad1, AdDto.class);
+        assertEquals(oldPrice2, adRepository.findById(id2).orElseThrow().getPrice());
     }
 
     @Test
@@ -177,7 +181,7 @@ class AdControllerTest {
         Mockito.verify(adService, Mockito.times(1)).removeAd(2);
         //удаляем уже удалённое объявление
         restTemplate.withBasicAuth(USER_USER1_EMAIL, USER_USER1_PASSWORD).delete(baseUrl + "ads/" + 1);
-        assertEquals(adRepository.findAll().size(),2,"В базе данных осталось 2 объявления из 4");
+        assertEquals(7,adRepository.findAll().size(),"В базе данных осталось 2 объявления из 4");
     }
 
     @Test

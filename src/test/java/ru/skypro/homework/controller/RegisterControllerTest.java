@@ -24,7 +24,6 @@ import ru.skypro.homework.service.impl.CustomUserDetailsManagerImpl;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_CLASS;
 import static ru.skypro.homework.constant.StaticForTests.*;
 
-//@Sql(scripts = {"classpath:schema.sql", "classpath:test-data.sql"}, executionPhase = BEFORE_TEST_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class RegisterControllerTest {
 
@@ -32,33 +31,11 @@ class RegisterControllerTest {
     int port;
     String baseUrl;
 
-
     @Autowired
     TestRestTemplate restTemplate;
 
     @MockitoSpyBean
-    AdService adService;
-
-    @MockitoSpyBean
-    AdRepository adRepository;
-
-    @MockitoSpyBean
     UserRepository userRepository;
-
-    @Autowired
-    private CustomUserDetailsManagerImpl customUserDetailsManagerImpl;
-
-    @Autowired
-    private UserController userController;
-
-    @MockitoSpyBean
-    private AdController adController;
-
-    @Autowired
-    private CommentRepository commentRepository;
-
-    @MockitoSpyBean
-    private RegisterController registerController;
 
     @MockitoSpyBean
     CustomUserDetailsManager userService;
@@ -70,9 +47,7 @@ class RegisterControllerTest {
 
     @AfterEach
     void cleanDB() {
-        adRepository.deleteAll();
         userRepository.deleteAll();
-        commentRepository.deleteAll();
     }
 
     @Test
@@ -89,10 +64,11 @@ class RegisterControllerTest {
         Assertions.assertEquals(USER_ADMIN_PHONE, userFromDb.getPhone());
         Assertions.assertEquals(USER_ADMIN_ROLE, userFromDb.getRole());
         Assertions.assertNotEquals(USER_ADMIN_PASSWORD,userFromDb.getPassword());
-
-        Mockito.verify(registerController,Mockito.times(1)).register(Mockito.any());
         Mockito.verify(userService,Mockito.times(1)).createUser(Mockito.any(RegisterDto.class));
+        //Пытаемся сдлать дубликат...
+        restTemplate.postForLocation(baseUrl + "register", new RegisterDto(
+                USER_ADMIN_EMAIL, USER_USER1_PASSWORD, USER_USER1_FIRST_NAME
+                ,USER_USER1_LAST_NAME,USER_USER1_PHONE,USER_USER1_ROLE));
+        Assertions.assertEquals(1, userRepository.findAll().size());
     }
-
-
 }

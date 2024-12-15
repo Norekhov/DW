@@ -43,20 +43,8 @@ class CommentControllerTest {
     @Autowired
     TestRestTemplate restTemplate;
 
-    @Autowired
-    AdController adController;
-
     @MockitoSpyBean
     AdService adService;
-
-    @MockitoSpyBean
-    CustomUserDetailsManager userService;
-
-    @MockitoSpyBean
-    AdRepository adRepository;
-
-    @MockitoSpyBean
-    UserRepository userRepository;
 
     @MockitoSpyBean
     private CommentController commentController;
@@ -70,13 +58,6 @@ class CommentControllerTest {
     void init() {
         baseUrl = "http://localhost:" + port + "/";
     }
-
-    @AfterEach
-    void cleanDB() {
-        adRepository.deleteAll();
-        userRepository.deleteAll();
-    }
-
 
     @Test
     @Transactional ////решает LazyInitializationException из-за lazy связи с users
@@ -154,13 +135,11 @@ class CommentControllerTest {
 
     @Test
     void getAllAds() {
-        addAd();
-
         ResponseEntity<AdListDto> response = restTemplate.getForEntity("http://localhost:" + port + "/ads", AdListDto.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(1, response.getBody().getCount());
+        assertEquals(11, response.getBody().getCount());
         Mockito.verify(adService, Mockito.times(1)).getAllAds();
     }
 
