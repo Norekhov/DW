@@ -79,6 +79,6 @@ public class UserAuthenticationDto implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return 1 == enabled;
+        return true;
     }
 }

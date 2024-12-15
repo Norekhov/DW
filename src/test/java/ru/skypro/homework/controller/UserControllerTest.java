@@ -55,15 +55,6 @@ class UserControllerTest {
         baseUrl = "http://localhost:" + port + "/";
     }
 
-    @AfterEach
-    void cleanDB() {
-        adRepository.deleteAll();
-        userRepository.deleteAll();
-        commentRepository.deleteAll();
-    }
-
-
-
     @Test
     void setPassword() {
     }
