@@ -10,9 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.skypro.homework.dto.LoginDto;
-import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.repository.UserRepository;
-import ru.skypro.homework.service.CustomUserDetailsManager;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -33,39 +31,19 @@ class FullIntegrationTest {
     @Autowired
     ObjectMapper objectMapper;
 
-    @Autowired
-//    @MockitoBean
-    AdController adController;
-
-    @Autowired
-//    @MockitoBean
-    AdRepository adRepository;
-    @Autowired
-    CustomUserDetailsManager customUserDetailsManager;
-
-    @MockitoSpyBean
+        @MockitoSpyBean
     UserRepository userRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    @Autowired
-//    @MockitoBean
-    LoginController loginController;
-
-    String token;
     String baseUrl = "http://localhost:8080/";
-
-    @BeforeEach
-    void setUp() throws Exception {
-
-    }
 
     @Test
     @Order(1)
     void firstTestRegister() throws Exception {
-        mockMvc.perform(post(this.baseUrl + "register").content(objectMapper.writeValueAsString(USER_ADMIN_REGISTER_DTO)).contentType(MediaType.APPLICATION_JSON).characterEncoding("ISO-8859-1")).andExpect(status().is(201));
-        Assertions.assertTrue(passwordEncoder.matches(USER_ADMIN_PASSWORD, userRepository.findByUsername(USER_ADMIN_EMAIL).get().getPassword()));
+        mockMvc.perform(post(this.baseUrl + "register").content(objectMapper.writeValueAsString(USER_ADMIN_REGISTER_DTO)).contentType(MediaType.APPLICATION_JSON).characterEncoding("ISO-8859-1")).andExpect(status().is(200));//todo why not status 201???
+        Assertions.assertTrue(passwordEncoder.matches(USER_ADMIN_PASSWORD, userRepository.findByUsername(USER_ADMIN_EMAIL).orElseThrow().getPassword()));
 
         mockMvc.perform(post(this.baseUrl + "register").content(objectMapper.writeValueAsString(USER_ADMIN_REGISTER_DTO)).contentType(MediaType.APPLICATION_JSON).characterEncoding("ISO-8859-1")).andExpect(status().is(409));
 

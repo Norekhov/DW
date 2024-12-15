@@ -51,39 +51,27 @@ public class AdServiceImpl implements AdService {
 
     @Override
     public AdDto addAd(MultipartFile image, CreateOrUpdateAdDto ad) {
-        Ad newAd = new Ad();
-        newAd.setUser(userService.getCurrentUser());
-        newAd.setTitle(ad.getTitle());
-        newAd.setAdText(ad.getDescription());
-        newAd.setPrice(ad.getPrice());
-        String extension = StringUtils.getFilenameExtension(image.getOriginalFilename());
-        String imageUrl = ApplicationConfig.getPathToAdImages() + UUID.randomUUID() + "." + extension;
-        try {
-            saveAdImage(image, imageUrl);
-        } catch (IOException e) {
-            log.error("Не удалось сохранить аватарку");
-            return AdMapper.toDto(newAd);
-        }
-        newAd.setImageUrl(imageUrl);
+        Ad newAd = AdMapper.toAd(ad, userService.getCurrentUser());
+        saveAdImage(image, newAd);
         return AdMapper.toDto(adRepository.save(newAd));
     }
 
     @Override
-    public void saveAdImage(MultipartFile image, String adImageUrl) throws IOException {
+    public void saveAdImage(MultipartFile image, Ad ad) {
+        String extension = StringUtils.getFilenameExtension(image.getOriginalFilename());
+        String imageUrl = ApplicationConfig.getPathToAdImages() + UUID.randomUUID() + "." + extension;
         Path parentDir = Path.of(".", ApplicationConfig.getPathToAdImages());
-        if (!Files.exists(parentDir)) {
-            try {
-                Files.createDirectories(parentDir);
-            } catch (IOException e) {
-                AdServiceImpl.log.error("Не удалось создать директорию {}", parentDir);
-            }
+        try {
+            if (!Files.exists(parentDir)) Files.createDirectories(parentDir);
+            Files.write(Path.of(".", imageUrl), image.getBytes());
+        } catch (IOException e) {
+            log.warn("Не удалось сохранить аватарку");
         }
-        Path path = Path.of(".", adImageUrl);
-        Files.write(path, image.getBytes());
+        ad.setImageUrl(imageUrl);
     }
 
     @Override
-    public ExtendedAdDto getAdById(Integer id) throws AdImageException{
+    public ExtendedAdDto getAdById(Integer id) throws AdImageException {
         return adRepository.findById(id).map(AdMapper::toExtendedAdDto).orElseThrow(() -> new AdImageException("Изображение не найдено"));
     }
 
@@ -97,11 +85,13 @@ public class AdServiceImpl implements AdService {
     @Override
     public AdDto updateAd(Integer adId, CreateOrUpdateAdDto ad) throws ForbiddenException {
         Ad updatedAd = adRepository.findById(adId).orElseThrow(() -> new EntityNotFoundException("Попытка обновить несуществующее объявление " + adId));
-        if (Objects.equals(updatedAd.getUser().getId(), userService.getCurrentUser().getId())) {
+        Integer currentUserId = userService.getCurrentUser().getId();
+        Integer adUserId = updatedAd.getUser().getId();
+        if (!adUserId.equals(currentUserId)) {
             throw new ForbiddenException("Попытка изменить чужое объявление");
         }
         updatedAd.setTitle(ad.getTitle());
-        if (ad.getDescription()!=null) {
+        if (ad.getDescription() != null) {
             updatedAd.setAdText(ad.getDescription());
         }
         updatedAd.setPrice(ad.getPrice());
@@ -115,7 +105,7 @@ public class AdServiceImpl implements AdService {
         if (!checkAuthorization(ad)) {
             throw new ForbiddenException("Попытка удалить чужое объявление: " + adId);
         }
-        commentRepository.deleteAll(commentRepository.findByAdPk(adId));
+        commentRepository.deleteAll(commentRepository.findByAdId(adId));
         if (ad.getImageUrl() != null) {
             removeAdImage(ad.getImageUrl());
         }
@@ -131,6 +121,7 @@ public class AdServiceImpl implements AdService {
             log.warn("Не удаётся удалить изображение объявления {}", path);
         }
     }
+
     @Override
     public byte[] updateAdImage(Integer adId, MultipartFile image) throws IOException, ForbiddenException {
         Ad ad = adRepository.findById(adId).orElseThrow(() -> new EntityNotFoundException("Попытка обновить изображение для несуществующего объявления" + adId));
@@ -144,10 +135,7 @@ public class AdServiceImpl implements AdService {
                 log.warn(e.getMessage());
             }
         }
-        String extension = StringUtils.getFilenameExtension(image.getOriginalFilename());
-        String url = ApplicationConfig.getPathToAdImages() + UUID.randomUUID() + "." + extension;
-        saveAdImage(image, url);
-        ad.setImageUrl(url);
+        saveAdImage(image, ad);
         adRepository.save(ad);
         return image.getBytes();
     }
@@ -155,9 +143,7 @@ public class AdServiceImpl implements AdService {
     @Override
     public byte[] readAdImageFromFs(String adImageUrl) throws IOException {
         Path path = Path.of(".", ApplicationConfig.getPathToAdImages()).resolve(adImageUrl);
-        if (!Files.exists(path)) {
-            throw new FileNotFoundException(path.toString());
-        }
+        if (!Files.exists(path)) throw new FileNotFoundException(path.toString());
         return Files.readAllBytes(path);
     }
 

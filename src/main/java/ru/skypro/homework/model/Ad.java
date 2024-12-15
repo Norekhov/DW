@@ -12,8 +12,8 @@ public class Ad {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ad_pk")
-    private Integer pk;
+    @Column(name = "ad_id")
+    private Integer id;
 
     private Integer price;
 
@@ -27,15 +27,18 @@ public class Ad {
     @Column(name = "image_url")
     private String imageUrl;
 
+    public Ad() {}
+
+    public Ad(Integer price, String title, String adText, User user) {
+        this.price = price;
+        this.title = title;
+        this.adText = adText;
+        this.user = user;
+    }
+
     @Override
     public String toString() {
-        return "Ad{" +
-                "pk=" + pk +
-                ", price=" + price +
-                ", title='" + title + '\'' +
-                ", adText='" + adText + '\'' +
-                ", user=" + user +
-                '}';
+        return "Ad{" + "pk=" + id + ", price=" + price + ", title='" + title + '\'' + ", adText='" + adText + '\'' + ", user=" + user + '}';
     }
 
     @Override
@@ -43,16 +46,16 @@ public class Ad {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Ad ad = (Ad) o;
-        return Objects.equals(pk, ad.pk) && Objects.equals(price, ad.price) && Objects.equals(title, ad.title) && Objects.equals(adText, ad.adText) && Objects.equals(user, ad.user);
+        return Objects.equals(id, ad.id) && Objects.equals(price, ad.price) && Objects.equals(title, ad.title) && Objects.equals(adText, ad.adText) && Objects.equals(user, ad.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pk, price, title, adText, user);
+        return Objects.hash(id, price, title, adText, user);
     }
 
-    public Integer getPk() {
-        return pk;
+    public Integer getId() {
+        return id;
     }
 
     public Integer getPrice() {
@@ -85,9 +88,6 @@ public class Ad {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public Ad() {
     }
 
     public String getImageUrl() {

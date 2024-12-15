@@ -47,9 +47,9 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
     /**
      * Загружает пользователя по ИД из БД
      *
-     * @param username
-     * @return
-     * @throws UsernameNotFoundException
+     * @param username имя пользователя
+     * @return UserDetails
+     * @throws UsernameNotFoundException ошибка. ну а что не понятно...
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -59,8 +59,8 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
     /**
      * Проверка логина на уникальность
      *
-     * @param username
-     * @return
+     * @param username имя пользователя
+     * @return boolean найден ли пользователь с таким username
      */
     @Override
     public boolean userExists(String username) {
@@ -70,16 +70,13 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
     /**
      * Новый пользователь из регистрационного эндпоинта
      *
-     * @param user
+     * @param user UserDetails
      */
     @Override
     public void createUser(UserDetails user) throws UserAlreadyExistsException {
         if (userExists(user.getUsername())) {
             throw new UserAlreadyExistsException(user.getUsername());
         }
-        UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
-                .passwordEncoder(passwordEncoder::encode).password(passwordEncoder.encode(user.getPassword()))
-                .username(user.getUsername()).roles(user.getAuthorities().toString()).build();
         userRepository.save(UserMapper.toUser(user));
     }
 
@@ -149,8 +146,8 @@ public class CustomUserDetailsManagerImpl implements CustomUserDetailsManager {
             throw new UnauthorizedException("Пользователь не авторизован");
         }
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException(userDetails.getUsername()));
-        return user;
+        return userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException(userDetails.getUsername()));
     }
 
     @Override

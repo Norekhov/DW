@@ -6,7 +6,7 @@ INSERT INTO ad (ad_text, price, title, user_id, image_url) VALUES
 ('12345678',333,'456456456',1,'/images/9b32f06a-b652-43c4-bf64-53a1b64f44fa.jpg'),
 ('+++++++++++',666,'testtesttestuser',2,'/images/7fa28915-70f3-4a96-a794-c117902bcf71.jpg'),
 ('Multipart',9999999,'Multipart',2,'/images/edcaedec-a754-4f9e-b2f8-97b8f2331e57.jpeg');
-INSERT INTO comment (created_at,text,ad_pk,user_id) VALUES
+INSERT INTO comment (created_at,text,ad_id,user_id) VALUES
 (1734113663789,'comment 1-1',1,1),
 (1734119096054,'comment 1-2',1,2),
 (1734119197949,'comment 2-1',1,1),
@@ -25,7 +25,7 @@ INSERT INTO ad (ad_text, price, title, user_id, image_url) VALUES
    ('12345678',333,'456456456',1,'/images/9b32f06a-b652-43c4-bf64-53a1b64f44fa.jpg'),
    ('+++++++++++',666,'testtesttestuser',2,'/images/7fa28915-70f3-4a96-a794-c117902bcf71.jpg'),
    ('Multipart',9999999,'Multipart',2,'/images/edcaedec-a754-4f9e-b2f8-97b8f2331e57.jpeg');
-INSERT INTO comment (created_at,text,ad_pk,user_id) VALUES
+INSERT INTO comment (created_at,text,ad_id,user_id) VALUES
     (1734113663789,'comment 1-1',1,1),
     (1734119096054,'comment 1-2',1,2),
     (1734119197949,'comment 2-1',2,1),
