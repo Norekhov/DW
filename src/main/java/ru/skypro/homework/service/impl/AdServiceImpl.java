@@ -97,7 +97,9 @@ public class AdServiceImpl implements AdService {
     @Override
     public AdDto updateAd(Integer adId, CreateOrUpdateAdDto ad) throws ForbiddenException {
         Ad updatedAd = adRepository.findById(adId).orElseThrow(() -> new EntityNotFoundException("Попытка обновить несуществующее объявление " + adId));
-        if (Objects.equals(updatedAd.getUser().getId(), userService.getCurrentUser().getId())) {
+        Integer currentUserId = userService.getCurrentUser().getId();
+        Integer adUserId = updatedAd.getUser().getId();
+        if (!adUserId.equals(currentUserId)){
             throw new ForbiddenException("Попытка изменить чужое объявление");
         }
         updatedAd.setTitle(ad.getTitle());
