@@ -54,6 +54,7 @@ public class WebSecurityConfig {
                 .cors(customizer -> customizer
                         .configurationSource(corsConfigurationSource()))
                 .httpBasic(Customizer.withDefaults())
+                .formLogin(AbstractHttpConfigurer::disable)
                 .build();
     }
 

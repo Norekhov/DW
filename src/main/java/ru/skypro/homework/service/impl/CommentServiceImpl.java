@@ -1,5 +1,7 @@
 package ru.skypro.homework.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.CommentDto;
 import ru.skypro.homework.dto.CommentsDto;
@@ -20,6 +22,8 @@ import java.util.List;
 @Service
 public class CommentServiceImpl implements CommentService {
 
+    private static final Logger log = LoggerFactory.getLogger(CommentServiceImpl.class);
+
     private final CommentRepository commentRepository;
     private final AdRepository adRepository;
     private final CustomUserDetailsManager customUserDetailsManager;
@@ -34,7 +38,7 @@ public class CommentServiceImpl implements CommentService {
      */
     @Override
     public CommentsDto getCommentsForAd(Integer adId) {
-        List<CommentDto> comments = commentRepository.findByAdPk(adId).stream().map(CommentMapper::toDto).toList();
+        List<CommentDto> comments = commentRepository.findByAdId(adId).stream().map(CommentMapper::toDto).toList();
         return new CommentsDto(comments.size(), comments);
     }
     /**
@@ -42,6 +46,7 @@ public class CommentServiceImpl implements CommentService {
      */
     @Override
     public CommentDto addComment(Integer adId, CreateOrUpdateCommentDto createCommentDto) {
+        log.info("Пользователь {} добавил комментарий к объявлению {}",customUserDetailsManager.getCurrentUser().getId(),adId);
         Ad ad = adRepository.findById(adId).orElseThrow();
         Comment comment = CommentMapper.toComment(createCommentDto, customUserDetailsManager.getCurrentUser(), System.currentTimeMillis(), ad);
         return CommentMapper.toDto(commentRepository.save(comment));
@@ -51,6 +56,7 @@ public class CommentServiceImpl implements CommentService {
      */
     @Override
     public CommentDto updateComment(Integer adId, Integer commentId, CreateOrUpdateCommentDto updateCommentDto) {
+        log.info("Пользователь {} обновляет комментарий {}", customUserDetailsManager.getCurrentUser().getId(), commentId);
         Ad ad = adRepository.findById(adId).orElseThrow();
         Comment comment = commentRepository.findById(commentId).orElseThrow();
         comment.setText(updateCommentDto.getText());
@@ -61,13 +67,12 @@ public class CommentServiceImpl implements CommentService {
      * Удаляет комментарий к объявлению.
      */
     @Override
-    public Boolean deleteComment(Integer commentId) {
+    public void deleteComment(Integer commentId) {
+        log.info("Пользователь {} удаляет комментарий {}", customUserDetailsManager.getCurrentUser().getId(), commentId);
         try {
             Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new EntityNotFoundException("Попытка удалить несуществующий комментарий "+commentId));
             commentRepository.delete(comment);
         } catch (EntityNotFoundException e) {
-            return false;
         }
-        return true;
     }
 }

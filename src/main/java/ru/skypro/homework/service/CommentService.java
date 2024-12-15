@@ -13,5 +13,5 @@ public interface CommentService {
 
     CommentDto updateComment(Integer adId, Integer commentId, CreateOrUpdateCommentDto createOrUpdateCommentDto);
 
-    Boolean deleteComment(Integer commentId);
+    void deleteComment(Integer commentId);
 }

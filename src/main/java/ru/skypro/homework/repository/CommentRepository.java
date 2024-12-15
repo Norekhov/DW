@@ -10,9 +10,8 @@ import java.util.List;
  */
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
-
     /**
      * Находит список комментариев по идентификатору объявления.
      */
-    List<Comment> findByAdPk(Integer adId);
+List<Comment> findByAdId(Integer adId);
 }
